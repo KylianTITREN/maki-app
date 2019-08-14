@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "400601813350",
+    "firebase_url": "https://c-anomalie.firebaseio.com",
+    "project_id": "c-anomalie",
+    "storage_bucket": "c-anomalie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400601813350:android:de882d3843be6ef1",
+        "android_client_info": {
+          "package_name": "com.servicesnomades.c_valide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400601813350-nr3ivitn6q0aoi78ps4r9urj6oih5q5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_kHdtgUz-T6MReCqdS_vwL_o9wNn3E58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400601813350-nr3ivitn6q0aoi78ps4r9urj6oih5q5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
