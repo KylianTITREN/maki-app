@@ -10,6 +10,8 @@ typedef void StateChangedCallback(String state);
 
 class FirebaseUtils {
   static void createFolder(String folderNumber, {CreateCallback callback}) {
+    assert(folderNumber != null);
+
     DatabaseReference reference =
         FirebaseDatabase.instance.reference().child('test').child('mobile_folders').push();
 
@@ -27,7 +29,24 @@ class FirebaseUtils {
     });
   }
 
+  static void setFolderState(String uid, String state, {CreateCallback callback}) {
+    assert(uid != null && state != null);
+
+    DatabaseReference reference =
+        FirebaseDatabase.instance.reference().child('test').child('mobile_folders').child(uid);
+
+    reference.update({'state': state}).then((success) {
+      if (callback != null) {
+        callback(reference.key);
+      }
+    }).catchError((error) {
+      Page.toast(Strings.textErrorOccurred);
+    });
+  }
+
   static void deleteFolder(String uid, {VoidCallback callback}) {
+    assert(uid != null);
+
     FirebaseDatabase.instance
         .reference()
         .child('test')
@@ -55,6 +74,6 @@ class FirebaseUtils {
       if (states.contains(state)) {
         callback(state);
       }
-    });
+    }, cancelOnError: false);
   }
 }

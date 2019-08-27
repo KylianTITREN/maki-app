@@ -1,7 +1,6 @@
 import 'package:c_valide/basics/BaseStatelessWidget.dart';
-import 'package:c_valide/pages/LoginPage.dart';
+import 'package:c_valide/pages/StepsPage.dart';
 import 'package:c_valide/res/HeroTags.dart';
-import 'package:c_valide/utils/Cache.dart';
 import 'package:c_valide/utils/Page.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +19,7 @@ class SplashscreenPage extends BaseStatelessWidget {
             child: Material(
               color: Colors.transparent,
               child: Image.asset(
-                "images/logo.png",
+                "assets/images/logo.png",
                 fit: BoxFit.fitWidth,
                 width: mq.size.width * 0.6,
               ),
@@ -44,16 +43,16 @@ class SplashscreenPage extends BaseStatelessWidget {
     }, _delay);
   }
 
-  void _startSharedPreferencesInitialization() {
-    _requestsPending++;
-    initializeSharedPreferences(() {
-      _onRequestsFinished();
-    });
-  }
+//  void _startSharedPreferencesInitialization() {
+//    _requestsPending++;
+//    initializeSharedPreferences(() {
+//      _onRequestsFinished();
+//    });
+//  }
 
   void _onRequestsFinished() {
     if (--_requestsPending == 0) {
-      Page.replacePage(context, LoginPage());
+      Page.replacePage(context, StepsPage());
     }
   }
 }

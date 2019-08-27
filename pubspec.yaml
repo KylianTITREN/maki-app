@@ -26,11 +26,15 @@ dependencies:
   json_annotation:
   firebase_core:
   firebase_database:
+  chewie:
   video_player:
   file_picker:
   image_picker:
   fluttertoast:
+  notifier:
   shared_preferences:
+  mime:
+  flutter_launcher_icons:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -42,6 +46,11 @@ dev_dependencies:
   retrofit_generator:
   build_runner:
   json_serializable:
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon_text.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -56,7 +65,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/
+    - assets/videos/
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

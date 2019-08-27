@@ -5,8 +5,9 @@ import 'package:c_valide/utils/Cache.dart';
 import 'package:c_valide/utils/NormalScrollBehavior.dart';
 import 'package:c_valide/utils/System.dart';
 import 'package:flutter/material.dart';
+import 'package:notifier/notifier.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(NotifierProvider(child: MyApp()));
 
 class MyApp extends StatelessWidget {
   @override

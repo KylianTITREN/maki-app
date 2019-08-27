@@ -1,15 +1,37 @@
+import 'dart:io';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'Anomalie.g.dart';
 
-@JsonSerializable()
 class Anomalie {
-  @JsonKey(name: 'id')
-  int id;
-  @JsonKey(name: 'text')
-  String text;
+  @JsonKey(name: 'ta_id_type')
+  String idType;
+  @JsonKey(name: 'ta_id_direction')
+  String idDirection;
+  @JsonKey(name: 'ta_nom')
+  String nom;
+  @JsonKey(name: 'ta_mail')
+  String mail;
+  @JsonKey(name: 'ta_mail_client')
+  String mailClient;
+  @JsonKey(name: 'ta_cas')
+  String cas;
+  @JsonKey(name: 'ta_ordre')
+  String ordre;
+  List<File> filesAssociated = List();
 
-  Anomalie({this.id, this.text});
+  Anomalie({
+    this.idType,
+    this.idDirection,
+    this.nom,
+    this.mail,
+    this.mailClient,
+    this.cas,
+    this.ordre,
+  });
+
+  bool get isResolved => filesAssociated.length > 0;
 
   factory Anomalie.fromJson(Map<String, dynamic> json) => _$AnomalieFromJson(json);
 
@@ -17,6 +39,6 @@ class Anomalie {
 
   @override
   String toString() {
-    return "Anomalie $id";
+    return "Anomalie $idType";
   }
 }

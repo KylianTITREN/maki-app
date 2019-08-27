@@ -49,7 +49,7 @@ class LoginPageState extends BaseState<LoginPage> {
                         child: Material(
                           color: Colors.transparent,
                           child: Image.asset(
-                            "images/logo.png",
+                            "assets/images/logo.png",
                             width: mq.size.height * 0.3,
                           ),
                         ),
@@ -63,7 +63,6 @@ class LoginPageState extends BaseState<LoginPage> {
                           Strings.textBelowLogoDescription,
                           style: Styles.description(context),
                           textAlign: TextAlign.center,
-                          maxLines: 2,
                         ),
                       ),
                     ),
@@ -215,7 +214,7 @@ class LoginPageState extends BaseState<LoginPage> {
                     child: Material(
                       color: Colors.transparent,
                       child: Image.asset(
-                        "images/cacf.png",
+                        "assets/images/cacf.png",
                         height: 30.0,
                       ),
                     ),

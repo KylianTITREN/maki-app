@@ -1,8 +1,8 @@
-import 'dart:async';
-
+import 'package:c_valide/app/Const.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
 import 'package:c_valide/basics/BaseStatefulWidget.dart';
+import 'package:c_valide/components/CButton.dart';
 import 'package:c_valide/components/CSeparator.dart';
 import 'package:c_valide/components/CVideo.dart';
 import 'package:c_valide/pages/StepsPage.dart';
@@ -11,8 +11,8 @@ import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:notifier/notifier.dart';
 
 class StepPage2 extends BaseStatefulWidget {
   StepPage2(this.parentState);
@@ -24,23 +24,26 @@ class StepPage2 extends BaseStatefulWidget {
 }
 
 class _StepPage2State extends BaseState<StepPage2> {
-  StreamSubscription<Event> _subscription;
+  @override
+  void onEnter() {
+    super.onEnter();
+    if (Const.DEMO) {
+      delay(() {
+        FirebaseUtils.setFolderState(Registry.uid, 'IN_PROGRESS', callback: (uid) {
+          widget.parentState.goToPage(2);
+        });
+      }, 6000);
+    } else {
+      widget.parentState.initSubscription();
+    }
+  }
 
   @override
-  void onCreate() {
-    _subscription = FirebaseUtils.listenState(
-      Registry.uid,
-      ['IN_PROGRESS'],
-      callback: (state) {
-        switch (state) {
-          case 'IN_PROGRESS':
-            {
-              _goToNextPage();
-              break;
-            }
-        }
-      },
-    );
+  void onLeave() {
+    super.onLeave();
+    if (!Const.DEMO) {
+      widget.parentState.cancelSubscription();
+    }
   }
 
   @override
@@ -52,37 +55,58 @@ class _StepPage2State extends BaseState<StepPage2> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              Notifier.of(context).register<bool>(Strings.notifyNoAdvisor, (_) {
+                return _.hasData && _.data
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: CircularProgressIndicator(),
+                      );
+              }),
               Hero(
                 tag: HeroTags.explanation,
                 child: Material(
                   color: Colors.transparent,
-                  child: Text(
-                    Strings.textWaitingForAdvisor,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: Styles.text(context),
-                    softWrap: false,
-                  ),
+                  child: Notifier.of(context).register<bool>(Strings.notifyNoAdvisor, (_) {
+                    return Text(
+                      _.hasData && _.data
+                          ? Strings.textNoFreeAdvisor
+                          : Strings.textWaitingForAdvisor,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      textAlign: TextAlign.center,
+                      style: Styles.text(context),
+                      softWrap: false,
+                    );
+                  }),
                 ),
               ),
               Hero(
                 tag: HeroTags.separator,
                 child: CSeparator(Colours.primaryColor),
               ),
-              CVideo(),
+              Container(
+                margin: const EdgeInsets.only(top: 32.0),
+                child: CVideo(),
+              ),
+              Notifier.of(context).register<bool>(Strings.notifyNoAdvisor, (_) {
+                return _.hasData && _.data
+                    ? Container(
+                        margin: const EdgeInsets.only(top: 32.0),
+                        child: CButton(
+                          Strings.textNewEntry,
+                          color: Colours.primaryColor,
+                          onPressed: () {
+                            widget.parentState.goToFirstPage();
+                          },
+                        ),
+                      )
+                    : Container();
+              }),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void _goToNextPage() {
-    if (_subscription != null) {
-      _subscription.cancel();
-    }
-
-    widget.parentState.goToNextPage();
   }
 }

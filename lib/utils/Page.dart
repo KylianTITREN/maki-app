@@ -12,8 +12,7 @@ class Page {
 
   /// Start a new page on top of the current one
   static void startPage(BuildContext context, Widget route, {duration = 300}) {
-    Navigator.push(
-      context,
+    Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => route),
 //      PageRouteBuilder(
 //        pageBuilder: (context, _, __) {
@@ -26,8 +25,7 @@ class Page {
 
   /// Replace the current page with a new one
   static void replacePage(BuildContext context, Widget route, {duration = 300}) {
-    Navigator.pushReplacement(
-      context,
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => route),
 //      PageRouteBuilder(
 //        pageBuilder: (context, _, __) {
@@ -69,7 +67,10 @@ class Page {
 
   ///
   static void requestFocus(
-      BuildContext context, FocusNode currentFocusNode, FocusNode nextFocusNode) {
+    BuildContext context,
+    FocusNode currentFocusNode,
+    FocusNode nextFocusNode,
+  ) {
     currentFocusNode.unfocus();
     FocusScope.of(context).requestFocus(nextFocusNode);
   }

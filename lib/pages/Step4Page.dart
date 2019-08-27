@@ -23,6 +23,18 @@ class StepPage4 extends BaseStatefulWidget {
 
 class _StepPage4State extends BaseState<StepPage4> {
   @override
+  void onEnter() {
+    super.onEnter();
+    widget.parentState.initSubscription();
+  }
+
+  @override
+  void onLeave() {
+    super.onLeave();
+    widget.parentState.cancelSubscription();
+  }
+
+  @override
   Widget onBuild() {
     return Container(
       padding: const EdgeInsets.all(32.0),
@@ -61,19 +73,22 @@ class _StepPage4State extends BaseState<StepPage4> {
                   child: Material(
                     color: Colors.transparent,
                     child: Image.asset(
-                      "images/${Registry.folderValidated ? 'check' : 'cancel'}.png",
+                      "assets/images/${Registry.folderValidated ? 'check' : 'cancel'}.png",
                       width: mq.size.width * 0.3,
                     ),
                   ),
                 ),
               ),
-              CVideo(),
+              Container(
+                margin: const EdgeInsets.only(top: 32.0),
+                child: CVideo(),
+              ),
               Container(
                 padding: const EdgeInsets.only(top: 32.0),
                 child: CButton(
-                  Strings.textNewEntry,
+                  Strings.textClose,
                   color: Colours.primaryColor,
-                  onPressed: _onValidate,
+                  onPressed: _onClose,
                 ),
               ),
             ],
@@ -83,7 +98,9 @@ class _StepPage4State extends BaseState<StepPage4> {
     );
   }
 
-  void _onValidate() {
+  void _onClose() {
+    Registry.reset();
+
     widget.parentState.goToFirstPage();
   }
 }

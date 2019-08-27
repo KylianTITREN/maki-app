@@ -73,7 +73,9 @@ class _CStepProgressBarState extends BaseState<CStepProgressBar>
                   icon: step.icon,
                   text: step.text,
                   maxSize: Size(maxWidth / stepsNumber, _currentStep == index ? height1 : height2),
-                  color: index == _currentStep ? Colours.grey : Colours.primaryColor,
+                  color: index == _currentStep && step.duration >= 0
+                      ? Colours.grey
+                      : Colours.primaryColor,
                   onLoadingFinished: step.onLoadingFinished,
                 ),
               ],

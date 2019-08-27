@@ -1,21 +1,23 @@
+import 'dart:async';
+
+import 'package:c_valide/api/RestClient.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
 import 'package:c_valide/basics/BaseStatefulWidget.dart';
-import 'package:c_valide/components/CButton.dart';
 import 'package:c_valide/components/CPage.dart';
 import 'package:c_valide/components/CStepProgressBar.dart';
 import 'package:c_valide/components/ThreePartsPage.dart';
+import 'package:c_valide/models/Anomalies.dart';
 import 'package:c_valide/pages/Step1Page.dart';
 import 'package:c_valide/pages/Step2Page.dart';
 import 'package:c_valide/pages/Step3Page.dart';
 import 'package:c_valide/pages/Step4Page.dart';
-import 'package:c_valide/res/Colours.dart';
 import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
-import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
-import 'package:c_valide/utils/Page.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:notifier/notifier.dart';
 
 class StepsPage extends BaseStatefulWidget {
   @override
@@ -24,8 +26,10 @@ class StepsPage extends BaseStatefulWidget {
 
 class StepsPageState extends BaseState<StepsPage> {
   int _currentStep = 0;
+  String _currentState = 'CREATED';
   List<Widget> _pageViews;
   PageController _pageController;
+  StreamSubscription<Event> _subscription;
 
   @override
   void initState() {
@@ -43,6 +47,60 @@ class StepsPageState extends BaseState<StepsPage> {
     );
   }
 
+  void initSubscription() {
+    _subscription = FirebaseUtils.listenState(
+      Registry.uid,
+      ['CREATED', 'IN_PROGRESS', 'ANOMALIES', 'REFUSED', 'VALIDATED'],
+      callback: (state) {
+        _currentState = state;
+        switch (state) {
+          case 'CREATED':
+            {
+              goToPage(1);
+              break;
+            }
+          case 'IN_PROGRESS':
+            {
+              goToPage(2);
+              break;
+            }
+          case 'ANOMALIES':
+            {
+              _startAnomaliesRequest();
+              break;
+            }
+          case 'REFUSED':
+            {
+              cancelSubscription();
+              Registry.folderValidated = false;
+              goToPage(3);
+              break;
+            }
+          case 'VALIDATED':
+            {
+              cancelSubscription();
+              Registry.folderValidated = true;
+              goToPage(3);
+              break;
+            }
+        }
+      },
+    );
+  }
+
+  void cancelSubscription() {
+    _subscription?.cancel();
+  }
+
+  void _startAnomaliesRequest() {
+    RestClient.service.getAnomalies(Registry.uid).then((Anomalies anomalies) {
+      Notifier.of(context).notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
+      goToPage(2);
+    }).catchError((Object object) {
+      print(object);
+    });
+  }
+
   @override
   Widget onBuild() {
     return CPage(
@@ -52,94 +110,60 @@ class StepsPageState extends BaseState<StepsPage> {
           alignment: Alignment.topCenter,
           child: Container(
             margin: const EdgeInsets.only(top: 24.0),
-            child: CStepProgressBar(
-              <CStep>[
-                CStep(
-                  "Saisie",
-                  Image.asset(
-                    "images/writer.png",
-                    height: 22,
-                    width: 22,
-                  ),
-                ),
-                CStep(
-                  "Prise en charge",
-                  Image.asset(
-                    "images/flashlight.png",
-                    height: 22,
-                    width: 22,
-                  ),
-                  duration: 15000,
-                  onLoadingFinished: () {
-                    if (_currentStep == 1) {
-                      FirebaseUtils.deleteFolder(Registry.uid, callback: () {
-                        Registry.reset();
-                      });
+            child: _currentStep > 0
+                ? CStepProgressBar(
+                    <CStep>[
+                      CStep(
+                        "Saisie",
+                        Image.asset(
+                          "assets/images/writer.png",
+                          height: 22,
+                          width: 22,
+                        ),
+                      ),
+                      CStep(
+                        "Prise en charge",
+                        Image.asset(
+                          "assets/images/flashlight.png",
+                          height: 22,
+                          width: 22,
+                        ),
+                        duration: 60000 * 5, // 5 minutes
+                        onLoadingFinished: () {
+                          if (_currentStep == 1) {
+                            FirebaseUtils.deleteFolder(Registry.uid, callback: () {
+                              Registry.reset();
+                            });
 
-                      showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return Material(
-                            color: Colours.overlay,
-                            child: Container(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    Strings.textNoFreeAdvisor,
-                                    style: Styles.text(context),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(top: 32.0),
-                                    child: Text(
-                                      Strings.textCallAgency,
-                                      style: Styles.text(context),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(top: 32.0),
-                                    child: CButton(
-                                      Strings.textNewEntry,
-                                      color: Colours.primaryColor,
-                                      onPressed: () {
-                                        Page.quitPage(context);
-                                        goToFirstPage();
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                            NotifierProvider.of(context).notify(
+                              Strings.notifyNoAdvisor,
+                              true,
+                            );
+                          }
                         },
-                      );
-                    }
-                  },
-                ),
-                CStep(
-                  "Validation",
-                  Image.asset(
-                    "images/checker.png",
-                    height: 22,
-                    width: 22,
-                  ),
-                ),
-                CStep(
-                  "Décision",
-                  Image.asset(
-                    "images/star.png",
-                    height: 22,
-                    width: 22,
-                  ),
-                ),
-              ],
-              currentStep: _currentStep,
-              padding: EdgeInsets.all(16.0),
-            ),
+                      ),
+                      CStep(
+                        "Validation",
+                        Image.asset(
+                          "assets/images/checker.png",
+                          height: 22,
+                          width: 22,
+                        ),
+                      ),
+                      CStep(
+                        "Décision",
+                        Image.asset(
+                          "assets/images/star.png",
+                          height: 22,
+                          width: 22,
+                        ),
+                        duration: -1,
+                      ),
+                    ],
+                    currentStep: _currentStep,
+                    padding: EdgeInsets.all(16.0),
+                  )
+                : Container(),
           ),
         ),
         middle: PageView(
@@ -156,7 +180,7 @@ class StepsPageState extends BaseState<StepsPage> {
               child: Material(
                 color: Colors.transparent,
                 child: Image.asset(
-                  "images/cacf.png",
+                  "assets/images/cacf.png",
                   height: 30.0,
                 ),
               ),
@@ -169,6 +193,8 @@ class StepsPageState extends BaseState<StepsPage> {
 
   int get currentStep => _currentStep;
 
+  String get currentState => _currentState;
+
   void goToFirstPage() {
     _currentStep = 0;
     _animateToPage();
@@ -176,6 +202,11 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void goToNextPage() {
     _currentStep = (_currentStep + 1) % _pageViews.length;
+    _animateToPage();
+  }
+
+  void goToPage(int page) {
+    _currentStep = page % _pageViews.length;
     _animateToPage();
   }
 
