@@ -144,7 +144,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                         Notifier.of(context).register<String>(Strings.notifyComment, (response) {
                           String comment = response.hasData
                               ? response.data
-                              : (Registry.comment.isNotEmpty ? Registry.comment : '');
+                              : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
 
                           return comment.isNotEmpty
                               ? FlatButton(
