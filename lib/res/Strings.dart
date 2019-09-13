@@ -9,6 +9,7 @@ class Strings {
   static String textCancel = 'Annuler';
   static String textErase = 'Effacer';
   static String textSend = 'Envoyer';
+  static String textAskNewStudy = 'Cliquez ici pour demander une nouvelle étude';
   static String textLoading = 'Chargement';
   static String textEntry = 'Saisie';
   static String textValidation = 'Validation';

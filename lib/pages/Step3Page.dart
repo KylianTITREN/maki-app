@@ -161,7 +161,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                         Container(
                           padding: const EdgeInsets.all(8.0),
                           child: CButton(
-                            Strings.textSend,
+                            Strings.textAskNewStudy,
                             color: Colours.primaryColor,
                             onPressed: () {
                               _onValidate();
