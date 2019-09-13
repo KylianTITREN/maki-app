@@ -54,13 +54,26 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
                   ),
                 )
               : Container(),
-          _anomalie.mailClient != null
+          _anomalie.mailAddon != null
               ? Container(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
-                    _anomalie.mailClient,
+                    _anomalie.mailAddon,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: Styles.text(context),
+                  ),
+                )
+              : Container(),
+          _anomalie.mailAddon != null
+              ? FlatButton(
+                  onPressed: () {
+                    _onMailAddonTapped(_anomalie.mailAddon);
+                  },
+                  child: Text(
+                    'Voir plus',
+                    style: Styles.littleTextPrimary(context),
                   ),
                 )
               : Container(),
@@ -101,6 +114,37 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
           ),
         ],
       ),
+    );
+  }
+
+  void _onMailAddonTapped(String description) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Commentaire',
+                  textAlign: TextAlign.center,
+                  style: Styles.appBarTitle(context),
+                ),
+                SizedBox(height: 8.0),
+                Text(description),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Page.quitDialog(context);
+              },
+              child: Text(Strings.textOk),
+            ),
+          ],
+        );
+      },
     );
   }
 

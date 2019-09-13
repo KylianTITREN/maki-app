@@ -25,6 +25,7 @@ class StepsPage extends BaseStatefulWidget {
 }
 
 class StepsPageState extends BaseState<StepsPage> {
+  int _requestsPending = 0;
   int _currentStep = 0;
   String _currentState = 'CREATED';
   List<Widget> _pageViews;
@@ -50,7 +51,7 @@ class StepsPageState extends BaseState<StepsPage> {
   void initSubscription() {
     _subscription = FirebaseUtils.listenState(
       Registry.uid,
-      ['CREATED', 'IN_PROGRESS', 'ANOMALIES', 'REFUSED', 'VALIDATED'],
+      ['CREATED', 'IN_PROGRESS', 'ANOMALIES', 'ANOMALIES_UPDATED', 'REFUSED', 'VALIDATED'],
       callback: (state) {
         _currentState = state;
         switch (state) {
@@ -59,6 +60,7 @@ class StepsPageState extends BaseState<StepsPage> {
               goToPage(1);
               break;
             }
+          case 'ANOMALIES_UPDATED':
           case 'IN_PROGRESS':
             {
               goToPage(2);
@@ -66,7 +68,7 @@ class StepsPageState extends BaseState<StepsPage> {
             }
           case 'ANOMALIES':
             {
-              _startAnomaliesRequest();
+              _startAnomaliesRequests();
               break;
             }
           case 'REFUSED':
@@ -92,13 +94,38 @@ class StepsPageState extends BaseState<StepsPage> {
     _subscription?.cancel();
   }
 
+  void _startAnomaliesRequests() {
+    _startFolderCommentRequest();
+    _startAnomaliesRequest();
+  }
+
+  void _startFolderCommentRequest() {
+    _requestsPending++;
+    FirebaseUtils.getFolderComment(
+      Registry.uid,
+      callback: (comment) {
+        Registry.comment = comment;
+        Notifier.of(context).notify(Strings.notifyComment, Registry.comment);
+        _onRequestFinished();
+        return;
+      },
+    );
+  }
+
   void _startAnomaliesRequest() {
+    _requestsPending++;
     RestClient.service.getAnomalies(Registry.uid).then((Anomalies anomalies) {
       Notifier.of(context).notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
-      goToPage(2);
+      _onRequestFinished();
     }).catchError((Object object) {
       print(object);
     });
+  }
+
+  void _onRequestFinished() {
+    if (--_requestsPending == 0) {
+      goToPage(2);
+    }
   }
 
   @override

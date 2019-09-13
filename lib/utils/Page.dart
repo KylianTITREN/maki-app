@@ -1,38 +1,48 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Page {
+  static const MethodChannel _rotationChannel = const MethodChannel('forceOrientation');
+
+  static void toLandscape() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    if (Platform.isIOS) {
+      _rotationChannel?.invokeMethod('setLandscape');
+    }
+  }
+
+  static void toPortrait() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (Platform.isIOS) {
+      _rotationChannel?.invokeMethod('setPortrait');
+    }
+  }
+
+  /// Quit the current dialog
+  static void quitDialog(BuildContext context) {
+    Navigator.of(context, rootNavigator: true)?.pop('dialog');
+  }
+
   /// Quit the current page
   static void quitPage(BuildContext context) {
-    Navigator.of(context).pop();
-//    Navigator.pop(context);
+    Navigator.of(context)?.pop();
   }
 
   /// Start a new page on top of the current one
   static void startPage(BuildContext context, Widget route, {duration = 300}) {
-    Navigator.of(context).push(
+    Navigator.of(context)?.push(
       MaterialPageRoute(builder: (context) => route),
-//      PageRouteBuilder(
-//        pageBuilder: (context, _, __) {
-//          return route;
-//        },
-//        transitionDuration: Duration(milliseconds: duration),
-//      ),
     );
   }
 
   /// Replace the current page with a new one
   static void replacePage(BuildContext context, Widget route, {duration = 300}) {
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context)?.pushReplacement(
       MaterialPageRoute(builder: (context) => route),
-//      PageRouteBuilder(
-//        pageBuilder: (context, _, __) {
-//          return route;
-//        },
-//        transitionDuration: Duration(milliseconds: duration),
-//      ),
     );
   }
 

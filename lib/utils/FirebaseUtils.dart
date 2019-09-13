@@ -9,11 +9,13 @@ typedef void CreateCallback(String uid);
 typedef void StateChangedCallback(String state);
 
 class FirebaseUtils {
+  static const String parentFolder = 'test';
+
   static void createFolder(String folderNumber, {CreateCallback callback}) {
     assert(folderNumber != null);
 
     DatabaseReference reference =
-        FirebaseDatabase.instance.reference().child('test').child('mobile_folders').push();
+        FirebaseDatabase.instance.reference().child(parentFolder).child('mobile_folders').push();
 
     reference.set({
       'folder_number': folderNumber,
@@ -32,8 +34,11 @@ class FirebaseUtils {
   static void setFolderState(String uid, String state, {CreateCallback callback}) {
     assert(uid != null && state != null);
 
-    DatabaseReference reference =
-        FirebaseDatabase.instance.reference().child('test').child('mobile_folders').child(uid);
+    DatabaseReference reference = FirebaseDatabase.instance
+        .reference()
+        .child(parentFolder)
+        .child('mobile_folders')
+        .child(uid);
 
     reference.update({'state': state}).then((success) {
       if (callback != null) {
@@ -44,12 +49,32 @@ class FirebaseUtils {
     });
   }
 
+  static void getFolderComment(String uid, {Function callback(String value)}) {
+    assert(uid != null);
+
+    FirebaseDatabase.instance
+        .reference()
+        .child(parentFolder)
+        .child('mobile_folders')
+        .child(uid)
+        .child('comment')
+        .once()
+        .then((DataSnapshot snapshot) {
+      if (callback != null) {
+        callback(snapshot.value);
+      }
+    }).catchError((error) {
+      print('Error: $error');
+      Page.toast(Strings.textErrorOccurred);
+    });
+  }
+
   static void deleteFolder(String uid, {VoidCallback callback}) {
     assert(uid != null);
 
     FirebaseDatabase.instance
         .reference()
-        .child('test')
+        .child(parentFolder)
         .child('mobile_folders')
         .child(uid)
         .remove()
@@ -64,7 +89,7 @@ class FirebaseUtils {
       {@required StateChangedCallback callback}) {
     return FirebaseDatabase.instance
         .reference()
-        .child('test')
+        .child(parentFolder)
         .child('mobile_folders')
         .child(uid)
         .child('state')

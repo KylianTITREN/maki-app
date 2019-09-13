@@ -19,6 +19,8 @@ class Anomalie {
   String cas;
   @JsonKey(name: 'ta_ordre')
   String ordre;
+  @JsonKey(name: 'ta_mail_addon')
+  String mailAddon;
   List<File> filesAssociated = List();
 
   Anomalie({
@@ -29,6 +31,7 @@ class Anomalie {
     this.mailClient,
     this.cas,
     this.ordre,
+    this.mailAddon,
   });
 
   bool get isResolved => filesAssociated.length > 0;

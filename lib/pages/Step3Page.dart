@@ -141,19 +141,32 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                             },
                           ),
                         ),
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CButton(
-                                Strings.textSend,
-                                color: Colours.primaryColor,
-                                onPressed: () {
-                                  _onValidate();
-                                },
-                              ),
-                            ),
-                          ],
+                        Notifier.of(context).register<String>(Strings.notifyComment, (response) {
+                          String comment = response.hasData
+                              ? response.data
+                              : (Registry.comment.isNotEmpty ? Registry.comment : '');
+
+                          return comment.isNotEmpty
+                              ? FlatButton(
+                                  onPressed: () {
+                                    _onAdvisorCommentBtnPressed(comment);
+                                  },
+                                  child: Text(
+                                    'Voir le commentaire du conseiller',
+                                    style: Styles.littleTextPrimary(context),
+                                  ),
+                                )
+                              : Container();
+                        }),
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CButton(
+                            Strings.textSend,
+                            color: Colours.primaryColor,
+                            onPressed: () {
+                              _onValidate();
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -161,6 +174,37 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                 );
         },
       ),
+    );
+  }
+
+  void _onAdvisorCommentBtnPressed(String comment) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Commentaire du conseiller',
+                  textAlign: TextAlign.center,
+                  style: Styles.appBarTitle(context),
+                ),
+                SizedBox(height: 8.0),
+                Text(comment),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Page.quitDialog(context);
+              },
+              child: Text(Strings.textOk),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -228,7 +272,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
     requestsPending--;
     if (requestsPending == 0) {
       DialogUtils.dismiss(context);
-      FirebaseUtils.setFolderState(Registry.uid, 'IN_PROGRESS', callback: (uid) {
+      FirebaseUtils.setFolderState(Registry.uid, 'ANOMALIES_UPDATED', callback: (uid) {
         _anomalies = [];
         setState(() {});
       });

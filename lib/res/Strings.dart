@@ -1,6 +1,7 @@
 class Strings {
   static String appName = 'Validation dossier';
 
+  static String textOk = 'OK';
   static String textErrorOccurred = 'Une erreur est survenue';
   static String textClose = 'Fermer';
   static String textBack = 'Retour';
@@ -49,4 +50,5 @@ class Strings {
 
   static String notifyNoAdvisor = 'notifyNoAdvisor';
   static String notifyAnomalies = 'notifyAnomalies';
+  static String notifyComment = 'notifyComment';
 }

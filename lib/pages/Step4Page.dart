@@ -9,6 +9,7 @@ import 'package:c_valide/res/Colours.dart';
 import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/res/Styles.dart';
+import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -36,6 +37,8 @@ class _StepPage4State extends BaseState<StepPage4> {
 
   @override
   Widget onBuild() {
+    FirebaseUtils.deleteFolder(Registry.uid);
+
     return Container(
       padding: const EdgeInsets.all(32.0),
       child: Center(
@@ -55,7 +58,7 @@ class _StepPage4State extends BaseState<StepPage4> {
                       [Registry.folderNumber],
                     ),
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
+                    maxLines: 3,
                     textAlign: TextAlign.center,
                     style: Styles.text(context),
                     softWrap: false,
