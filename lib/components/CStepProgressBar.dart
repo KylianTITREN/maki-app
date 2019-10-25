@@ -48,7 +48,7 @@ class _CStepProgressBarState extends BaseState<CStepProgressBar>
     double maxWidth = mq.size.width - _padding.horizontal;
     int stepsNumber = _steps.length;
 
-    const double tilt = 10.0;
+    const double tilt = 7.0;
     const double height1 = 70.0;
     const double height2 = 60.0;
 

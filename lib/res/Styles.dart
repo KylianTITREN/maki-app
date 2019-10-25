@@ -63,7 +63,7 @@ class Styles {
   static TextStyle description(BuildContext context) {
     return TextStyle(
       color: Colors.white,
-      fontSize: Misc.isTablet(context) ? 21.0 : 17.0,
+      fontSize: Misc.isTablet(context) ? 21.0 : 16.0,
       fontWeight: FontWeight.w400,
     );
   }

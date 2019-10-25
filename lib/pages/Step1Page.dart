@@ -56,15 +56,15 @@ class _StepPage1State extends BaseState<StepPage1> {
                         color: Colors.transparent,
                         child: Image.asset(
                           "assets/images/logo.png",
-                          width: mq.size.height * 0.33,
+                          width: mq.size.height * 0.30,
                         ),
                       ),
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.only(top: 8.0),
+                    padding: const EdgeInsets.only(top: 10.0),
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: mq.size.height * 0.33),
+                      constraints: BoxConstraints(maxWidth: mq.size.width * 0.6),
                       child: Text(
                         Strings.textBelowLogoDescription,
                         style: Styles.description(context),
@@ -75,6 +75,7 @@ class _StepPage1State extends BaseState<StepPage1> {
                 ],
               ),
             ),
+            SizedBox(height: 15),
             Container(
               padding: const EdgeInsets.all(24.0),
               child: Form(

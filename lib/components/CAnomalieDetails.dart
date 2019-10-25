@@ -55,9 +55,10 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
                   ),
                 )
               : Container(),
+          SizedBox(height: 15),
           _anomalie.mailAddon != null
               ? Container(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(bottom: 20.0, top: 5),
                   child: Text(
                     _anomalie.mailAddon,
                     maxLines: 3,
@@ -67,17 +68,19 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
                   ),
                 )
               : Container(),
-          _anomalie.mailAddon != null && _anomalie.mailAddon != ""
-              ? FlatButton(
+          _anomalie.mailAddon != null && _anomalie.mailAddon != "" && _anomalie.mailAddon.length > 230
+              ? 
+              Padding(
+                padding: EdgeInsets.only(bottom: 15),
+                child: FlatButton(
                   onPressed: () {
-                    print(_anomalie.mailAddon);
                     _onMailAddonTapped(_anomalie.mailAddon);
                   },
                   child: Text(
                     'Voir plus',
                     style: Styles.littleTextPrimary(context),
                   ),
-                )
+                ))
               : Container(),
           Registry.folderValidated != 1
               ? GridView.count(
@@ -116,6 +119,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
               Page.quitPage(context);
             },
           ),
+          SizedBox(height: 25)
         ],
       ),
     );

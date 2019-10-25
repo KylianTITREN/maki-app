@@ -196,10 +196,11 @@ class _CProgressBarState extends State<CProgressBar> with SingleTickerProviderSt
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               _icon ?? Container(),
+              SizedBox(height: 5),
               Text(
                 _text,
                 style: TextStyle(
-                  fontSize: 11.0,
+                  fontSize: 10.0,
                   color: Colors.white,
                 ),
                 maxLines: 2,

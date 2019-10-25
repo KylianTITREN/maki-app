@@ -134,7 +134,7 @@ class _StepPage4State extends BaseState<StepPage4> {
                               ),
                               Notifier.of(context).register<String>(
                                   Strings.notifyComment, (response) {
-                                    print(response);
+                                print(response);
                                 String comment = response.hasData
                                     ? response.data
                                     : (Registry.comment?.isNotEmpty ?? false
@@ -142,22 +142,28 @@ class _StepPage4State extends BaseState<StepPage4> {
                                         : '');
 
                                 return comment.isNotEmpty
-                                    ? FlatButton(
-                                        onPressed: () {
-                                          _onAdvisorCommentBtnPressed(comment);
-                                        },
-                                        child: Text(
-                                          'Voir le commentaire du conseiller',
-                                          style:
-                                              Styles.littleTextPrimary(context),
-                                        ),
+                                    ? Column(
+                                        children: <Widget>[
+                                          SizedBox(height: 30),
+                                          Text('Merci de refaire signer le dossier',
+                                            style: Styles.text(context),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          FlatButton(
+                                            onPressed: () {
+                                              _onAdvisorCommentBtnPressed(
+                                                  comment);
+                                            },
+                                            child: Text(
+                                              'Voir le commentaire du conseiller',
+                                              style: Styles.littleTextPrimary(
+                                                  context),
+                                            ),
+                                          ),
+                                        ],
                                       )
                                     : Container();
                               }),
-                              Container(
-                                margin: const EdgeInsets.only(top: 32.0),
-                                child: CVideo(),
-                              ),
                               Container(
                                 padding: const EdgeInsets.only(top: 32.0),
                                 child: CButton(

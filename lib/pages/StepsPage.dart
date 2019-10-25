@@ -152,7 +152,7 @@ class StepsPageState extends BaseState<StepsPage> {
         top: Align(
           alignment: Alignment.topCenter,
           child: Container(
-            margin: const EdgeInsets.only(top: 24.0),
+            margin: const EdgeInsets.only(top: 28.0, bottom: 0),
             child: _currentStep > 0
                 ? CStepProgressBar(
                     <CStep>[
@@ -160,16 +160,16 @@ class StepsPageState extends BaseState<StepsPage> {
                         "Saisie",
                         Image.asset(
                           "assets/images/writer.png",
-                          height: 22,
-                          width: 22,
+                          height: 20,
+                          width: 20,
                         ),
                       ),
                       CStep(
                         "Prise en charge",
                         Image.asset(
                           "assets/images/flashlight.png",
-                          height: 22,
-                          width: 22,
+                          height: 20,
+                          width: 20,
                         ),
                         duration: 60000 * 5, // 5 minutes
                         onLoadingFinished: () {
@@ -190,22 +190,22 @@ class StepsPageState extends BaseState<StepsPage> {
                         "Validation",
                         Image.asset(
                           "assets/images/checker.png",
-                          height: 22,
-                          width: 22,
+                          height: 20,
+                          width: 20,
                         ),
                       ),
                       CStep(
                         "Décision",
                         Image.asset(
                           "assets/images/star.png",
-                          height: 22,
-                          width: 22,
+                          height: 20,
+                          width: 20,
                         ),
                         duration: -1,
                       ),
                     ],
                     currentStep: _currentStep,
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.symmetric(horizontal:16.0),
                   )
                 : Container(),
           ),
@@ -218,14 +218,14 @@ class StepsPageState extends BaseState<StepsPage> {
         bottom: Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            margin: const EdgeInsets.only(bottom: 32.0),
+            margin: const EdgeInsets.only(bottom: 25.0),
             child: Hero(
               tag: HeroTags.cacfLogo,
               child: Material(
                 color: Colors.transparent,
                 child: Image.asset(
                   "assets/images/cacf.png",
-                  height: 30.0,
+                  height: 27.0,
                 ),
               ),
             ),
