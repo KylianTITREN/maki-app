@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:c_valide/app/Const.dart';
+import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/components/CButton.dart';
 import 'package:c_valide/models/Anomalie.dart';
 import 'package:c_valide/res/Colours.dart';
@@ -66,9 +67,10 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
                   ),
                 )
               : Container(),
-          _anomalie.mailAddon != null
+          _anomalie.mailAddon != null && _anomalie.mailAddon != ""
               ? FlatButton(
                   onPressed: () {
+                    print(_anomalie.mailAddon);
                     _onMailAddonTapped(_anomalie.mailAddon);
                   },
                   child: Text(
@@ -77,34 +79,36 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
                   ),
                 )
               : Container(),
-          GridView.count(
-            primary: false,
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            mainAxisSpacing: 6.0,
-            crossAxisSpacing: 6.0,
-            padding: const EdgeInsets.all(16.0),
-            children: List.generate(
-              length,
-              (index) {
-                if (index == _anomalie.filesAssociated.length) {
-                  return UploadButton(
-                    Icons.add_circle,
-                    onPressed: onUploadButtonPressed,
-                  );
-                } else {
-                  File file = _anomalie.filesAssociated[index];
-                  return DocumentButton(
-                    context,
-                    file,
-                    onPressed: () {
-                      onDocumentButtonPressed(file);
+          Registry.folderValidated != 1
+              ? GridView.count(
+                  primary: false,
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 6.0,
+                  crossAxisSpacing: 6.0,
+                  padding: const EdgeInsets.all(16.0),
+                  children: List.generate(
+                    length,
+                    (index) {
+                      if (index == _anomalie.filesAssociated.length) {
+                        return UploadButton(
+                          Icons.add_circle,
+                          onPressed: onUploadButtonPressed,
+                        );
+                      } else {
+                        File file = _anomalie.filesAssociated[index];
+                        return DocumentButton(
+                          context,
+                          file,
+                          onPressed: () {
+                            onDocumentButtonPressed(file);
+                          },
+                        );
+                      }
                     },
-                  );
-                }
-              },
-            ),
-          ),
+                  ),
+                )
+              : Container(),
           CButton(
             Strings.textValidate,
             color: Colours.primaryColor,
@@ -276,7 +280,8 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
   }
 
   void pickPDF() async {
-    File file = await FilePicker.getFile(type: FileType.CUSTOM, fileExtension: "pdf");
+    File file =
+        await FilePicker.getFile(type: FileType.CUSTOM, fileExtension: "pdf");
     addFile(file);
   }
 

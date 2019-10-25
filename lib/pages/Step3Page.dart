@@ -3,6 +3,7 @@ import 'package:c_valide/app/Const.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
 import 'package:c_valide/basics/BaseStatefulWidget.dart';
+import 'package:c_valide/components/AnomalieRow.dart';
 import 'package:c_valide/components/BottomSheetComponent.dart';
 import 'package:c_valide/components/CAnomalieDetails.dart';
 import 'package:c_valide/components/CButton.dart';
@@ -131,7 +132,6 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                             itemCount: _anomalies.length,
                             itemBuilder: (context, index) {
                               Anomalie anomalie = _anomalies[index];
-
                               return GestureDetector(
                                 onTap: () {
                                   showModal(anomalie);
@@ -229,8 +229,11 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
   void _onValidate() {
     if (_anomalies.every((anomalie) => anomalie.isResolved)) {
       _sendDocuments();
-    } else {
+    }else {
       Page.toast(Strings.textUploadDocumentsPlease);
+    }
+    if (_anomalies.every((anomalie) => !anomalie.pictureNeeded)) {
+      _sendDocuments();
     }
   }
 
@@ -242,7 +245,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
         FirebaseUtils.setFolderState(Registry.uid, 'VALIDATED', callback: (uid) {
           DialogUtils.dismiss(context);
 
-          Registry.folderValidated = true;
+          Registry.folderValidated = 2;
           widget.parentState.goToPage(3);
         });
       }, 4000);
@@ -277,39 +280,5 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
         setState(() {});
       });
     }
-  }
-}
-
-class AnomalieRow extends StatelessWidget {
-  AnomalieRow(this.anomalie);
-
-  final Anomalie anomalie;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(4.0),
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: anomalie.isResolved ? Colours.primaryColor : Colours.darkGrey,
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              anomalie.nom,
-              style: Styles.textThin(context),
-            ),
-          ),
-          Icon(
-            anomalie.isResolved ? Icons.check : Icons.keyboard_arrow_right,
-            color: Colors.white,
-          ),
-        ],
-      ),
-    );
   }
 }

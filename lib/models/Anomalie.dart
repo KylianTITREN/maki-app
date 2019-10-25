@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'Anomalie.g.dart';
 
+@JsonSerializable()
 class Anomalie {
   @JsonKey(name: 'ta_id_type')
   String idType;
@@ -21,6 +22,7 @@ class Anomalie {
   String ordre;
   @JsonKey(name: 'ta_mail_addon')
   String mailAddon;
+  @JsonKey(ignore: true)
   List<File> filesAssociated = List();
 
   Anomalie({
@@ -35,6 +37,7 @@ class Anomalie {
   });
 
   bool get isResolved => filesAssociated.length > 0;
+  bool get pictureNeeded => nom == 'ANOMALIES' ? false : true;
 
   factory Anomalie.fromJson(Map<String, dynamic> json) => _$AnomalieFromJson(json);
 

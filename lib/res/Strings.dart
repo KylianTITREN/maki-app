@@ -22,6 +22,8 @@ class Strings {
       "Nous ne pouvons pas valider le dossier N°%s car il comporte l'anomalie suivante";
   static String textAnomaliesFolderNumber =
       "Nous ne pouvons pas valider le dossier N°%s car il comporte les %d anomalies suivantes";
+  static String textCanceledAnomalieFolderNumber = "Le dossier N° %s a été annulé car il comporte l'anomalie suivante";
+  static String textCanceledAnomaliesFolderNumber = "Le dossier N° %s a été annulé car il comporte les %d anomalies suivantes";
   static String textUploadDocuments = "Uploader des documents";
   static String textValidating = "En cours de validation";
   static String textFolderValidated =

@@ -51,7 +51,15 @@ class StepsPageState extends BaseState<StepsPage> {
   void initSubscription() {
     _subscription = FirebaseUtils.listenState(
       Registry.uid,
-      ['CREATED', 'IN_PROGRESS', 'ANOMALIES', 'ANOMALIES_UPDATED', 'REFUSED', 'VALIDATED'],
+      [
+        'CREATED',
+        'IN_PROGRESS',
+        'ANOMALIES',
+        'ANOMALIES_UPDATED',
+        'REFUSED',
+        'VALIDATED',
+        'CANCELED'
+      ],
       callback: (state) {
         _currentState = state;
         switch (state) {
@@ -74,14 +82,21 @@ class StepsPageState extends BaseState<StepsPage> {
           case 'REFUSED':
             {
               cancelSubscription();
-              Registry.folderValidated = false;
+              Registry.folderValidated = 0;
+              goToPage(3);
+              break;
+            }
+          case 'CANCELED':
+            {
+              Registry.folderValidated = 1;
+              _startAnomaliesRequests();
               goToPage(3);
               break;
             }
           case 'VALIDATED':
             {
               cancelSubscription();
-              Registry.folderValidated = true;
+              Registry.folderValidated = 2;
               goToPage(3);
               break;
             }
@@ -115,7 +130,8 @@ class StepsPageState extends BaseState<StepsPage> {
   void _startAnomaliesRequest() {
     _requestsPending++;
     RestClient.service.getAnomalies(Registry.uid).then((Anomalies anomalies) {
-      Notifier.of(context).notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
+      Notifier.of(context)
+          .notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
       _onRequestFinished();
     }).catchError((Object object) {
       print(object);
@@ -124,7 +140,7 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void _onRequestFinished() {
     if (--_requestsPending == 0) {
-      goToPage(2);
+      Registry.folderValidated == 1 ? _subscription?.cancel() : goToPage(2);
     }
   }
 
@@ -158,7 +174,8 @@ class StepsPageState extends BaseState<StepsPage> {
                         duration: 60000 * 5, // 5 minutes
                         onLoadingFinished: () {
                           if (_currentStep == 1) {
-                            FirebaseUtils.deleteFolder(Registry.uid, callback: () {
+                            FirebaseUtils.deleteFolder(Registry.uid,
+                                callback: () {
                               Registry.reset();
                             });
 
