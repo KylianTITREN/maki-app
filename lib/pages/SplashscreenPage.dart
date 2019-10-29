@@ -51,12 +51,14 @@ class SplashscreenPage extends BaseStatelessWidget {
   void onCreate() {
     _requestsPending = 0;
     _startAutoUpdateRequest(() {
-      _startTimer();
-      if (kReleaseMode || Const.DEMO) {
-        _startIsAdvisersAvailableRequest();
+      if (App.serviceOpened(context)) {
+        _startTimer();
+        if (kReleaseMode || Const.DEMO) {
+          _startIsAdvisersAvailableRequest();
 //      _startIsServiceAvailableRequest();
-      }
+        }
 //    _startSharedPreferencesInitialization();
+      }
     });
   }
 

@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:c_valide/res/Strings.dart';
+import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/Dialogs.dart';
+import 'package:c_valide/utils/Page.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 
@@ -47,5 +51,43 @@ class App {
         text: notification['body'],
       ).show();
     }
+  }
+
+  static bool serviceOpened(BuildContext context) {
+    DateTime now = DateTime.now();
+    bool serviceOpened = now.hour >= 9 && now.hour <= 20;
+
+    if (!serviceOpened) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    '',
+                    textAlign: TextAlign.center,
+                    style: Styles.appBarTitle(context),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text('${Strings.textServiceAvailableBetween}. ${Strings.textTryAgainLater}.'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  quitDialog(context);
+                },
+                child: Text(Strings.textOk),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return serviceOpened;
   }
 }
