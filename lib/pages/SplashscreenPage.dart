@@ -6,7 +6,8 @@ import 'package:c_valide/app/App.dart';
 import 'package:c_valide/app/Const.dart';
 import 'package:c_valide/autoupdate/AutoUpdate.dart';
 import 'package:c_valide/autoupdate/VersionsClient.dart';
-import 'package:c_valide/basics/BaseStatelessWidget.dart';
+import 'package:c_valide/basics/BaseState.dart';
+import 'package:c_valide/basics/BaseStatefulWidget.dart';
 import 'package:c_valide/pages/StepsPage.dart';
 import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
@@ -20,36 +21,21 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SplashscreenPage extends BaseStatelessWidget {
+class SplashscreenPage extends BaseStatefulWidget {
+  @override
+  State<StatefulWidget> onBuild() => SplashscreenPageState();
+
+}
+
+class SplashscreenPageState extends BaseState<SplashscreenPage> {
   static int _delay = 1500;
   int _requestsPending = 0;
 
   ChoicesDialog updateDialog;
 
   @override
-  Widget onBuild() {
-    return Scaffold(
-      body: Container(
-        color: Colors.black87,
-        child: Center(
-          child: Hero(
-            tag: HeroTags.logo,
-            child: Material(
-              color: Colors.transparent,
-              child: Image.asset(
-                "assets/images/logo.png",
-                fit: BoxFit.fitWidth,
-                width: mq.size.width * 0.6,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void onCreate() {
+  void initState() {
+    super.initState();
     _startPackageInfoRequest(
       onSuccess: () {
         _startAutoUpdateRequest(
@@ -76,6 +62,28 @@ class SplashscreenPage extends BaseStatelessWidget {
           },
         ).show();
       },
+    );
+  }
+
+  @override
+  Widget onBuild() {
+    return Scaffold(
+      body: Container(
+        color: Colors.black87,
+        child: Center(
+          child: Hero(
+            tag: HeroTags.logo,
+            child: Material(
+              color: Colors.transparent,
+              child: Image.asset(
+                "assets/images/logo.png",
+                fit: BoxFit.fitWidth,
+                width: mq.size.width * 0.6,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
