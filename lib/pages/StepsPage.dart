@@ -27,7 +27,7 @@ class StepsPage extends BaseStatefulWidget {
 class StepsPageState extends BaseState<StepsPage> {
   int _requestsPending = 0;
   int _currentStep = 0;
-  String _currentState = 'CREATED';
+  String _currentState = '';
   List<Widget> _pageViews;
   PageController _pageController;
   StreamSubscription<Event> _subscription;
@@ -48,18 +48,30 @@ class StepsPageState extends BaseState<StepsPage> {
     );
   }
 
+  @override
+  void onResume() {
+    FirebaseUtils.setFolderState(Registry.uid, currentState);
+  }
+
+  @override
+  void onSuspend() {
+    FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+  }
+
+  @override
+  void onInactive() {
+    FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+  }
+
+  @override
+  void onPause() {
+    FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+  }
+
   void initSubscription() {
     _subscription = FirebaseUtils.listenState(
       Registry.uid,
-      [
-        'CREATED',
-        'IN_PROGRESS',
-        'ANOMALIES',
-        'ANOMALIES_UPDATED',
-        'REFUSED',
-        'VALIDATED',
-        'CANCELED'
-      ],
+      ['CREATED', 'IN_PROGRESS', 'ANOMALIES', 'ANOMALIES_UPDATED', 'REFUSED', 'VALIDATED', 'CANCELED'],
       callback: (state) {
         _currentState = state;
         switch (state) {
@@ -88,6 +100,7 @@ class StepsPageState extends BaseState<StepsPage> {
             }
           case 'CANCELED':
             {
+              cancelSubscription();
               Registry.folderValidated = 1;
               _startAnomaliesRequests();
               goToPage(3);
@@ -130,8 +143,7 @@ class StepsPageState extends BaseState<StepsPage> {
   void _startAnomaliesRequest() {
     _requestsPending++;
     RestClient.service.getAnomalies(Registry.uid).then((Anomalies anomalies) {
-      Notifier.of(context)
-          .notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
+      Notifier.of(context).notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
       _onRequestFinished();
     }).catchError((Object object) {
       print(object);
@@ -174,8 +186,7 @@ class StepsPageState extends BaseState<StepsPage> {
                         duration: 60000 * 5, // 5 minutes
                         onLoadingFinished: () {
                           if (_currentStep == 1) {
-                            FirebaseUtils.deleteFolder(Registry.uid,
-                                callback: () {
+                            FirebaseUtils.deleteFolder(Registry.uid, callback: () {
                               Registry.reset();
                             });
 
@@ -205,7 +216,7 @@ class StepsPageState extends BaseState<StepsPage> {
                       ),
                     ],
                     currentStep: _currentStep,
-                    padding: EdgeInsets.symmetric(horizontal:16.0),
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                   )
                 : Container(),
           ),
