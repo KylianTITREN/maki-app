@@ -60,11 +60,12 @@ class FirebaseUtils {
         .child('comment')
         .once()
         .then((DataSnapshot snapshot) {
+          print(snapshot.value);
       if (callback != null) {
         callback(snapshot.value);
       }
     }).catchError((error) {
-      print('Error: $error');
+      print('ERROR: $error');
       Page.toast(Strings.textErrorOccurred);
     });
   }

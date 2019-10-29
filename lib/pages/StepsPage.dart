@@ -81,8 +81,8 @@ class StepsPageState extends BaseState<StepsPage> {
             }
           case 'REFUSED':
             {
-              cancelSubscription();
               Registry.folderValidated = 0;
+              _startAnomaliesRequests();
               goToPage(3);
               break;
             }
@@ -130,6 +130,8 @@ class StepsPageState extends BaseState<StepsPage> {
   void _startAnomaliesRequest() {
     _requestsPending++;
     RestClient.service.getAnomalies(Registry.uid).then((Anomalies anomalies) {
+      Registry.comment = anomalies.comment;
+      Notifier.of(context).notify(Strings.notifyComment, Registry.comment);
       Notifier.of(context)
           .notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
       _onRequestFinished();
@@ -140,7 +142,9 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void _onRequestFinished() {
     if (--_requestsPending == 0) {
-      Registry.folderValidated == 1 ? _subscription?.cancel() : goToPage(2);
+      Registry.folderValidated == 1 || Registry.folderValidated == 0
+          ? _subscription?.cancel()
+          : goToPage(2);
     }
   }
 
@@ -205,7 +209,7 @@ class StepsPageState extends BaseState<StepsPage> {
                       ),
                     ],
                     currentStep: _currentStep,
-                    padding: EdgeInsets.symmetric(horizontal:16.0),
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                   )
                 : Container(),
           ),

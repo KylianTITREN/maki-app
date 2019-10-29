@@ -64,7 +64,8 @@ class _StepPage1State extends BaseState<StepPage1> {
                   Container(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: mq.size.width * 0.6),
+                      constraints:
+                          BoxConstraints(maxWidth: mq.size.width * 0.6),
                       child: Text(
                         Strings.textBelowLogoDescription,
                         style: Styles.description(context),
@@ -131,18 +132,21 @@ class _StepPage1State extends BaseState<StepPage1> {
                                 decoration: InputDecoration(
                                   counterText: '',
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                     borderSide: BorderSide(
                                       color: Colors.black54,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                     borderSide: BorderSide(
                                       color: Colors.black54,
                                     ),
                                   ),
-                                  contentPadding: EdgeInsets.only(left: 8.0, right: 8.0, top: 32.0),
+                                  contentPadding: EdgeInsets.only(
+                                      left: 8.0, right: 8.0, top: 32.0),
                                   filled: true,
                                   fillColor: Colours.field,
                                   hintText: Strings.hintFolderNumber,
@@ -189,9 +193,41 @@ class _StepPage1State extends BaseState<StepPage1> {
   }
 
   void _onValidateForm() {
-    if (_formKey.currentState.validate()) {
-      Page.dismissKeyboard(context);
-      _onValidate();
+    if (DateTime.now().hour < 9 || DateTime.now().hour > 20) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    '',
+                    textAlign: TextAlign.center,
+                    style: Styles.appBarTitle(context),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                      'Les services ne sont disponibles qu\'entre 9h et 20h. Veuillez réessayer plus tard.'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Page.quitDialog(context);
+                },
+                child: Text(Strings.textOk),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      if (_formKey.currentState.validate()) {
+        Page.dismissKeyboard(context);
+        _onValidate();
+      }
     }
   }
 

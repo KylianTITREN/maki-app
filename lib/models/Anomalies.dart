@@ -15,6 +15,8 @@ class Anomalies {
   String idAdvisor;
   @JsonKey(name: 'id_enseigne')
   String idEnseigne;
+  @JsonKey(name: 'comment')
+  String comment;
   @JsonKey(name: 'start_study_at')
   DateTime startStudyAt;
   @JsonKey(name: 'created_at')
@@ -30,6 +32,7 @@ class Anomalies {
     this.state,
     this.idAdvisor,
     this.idEnseigne,
+    this.comment,
     this.startStudyAt,
     this.createdAt,
     this.updatedAt,

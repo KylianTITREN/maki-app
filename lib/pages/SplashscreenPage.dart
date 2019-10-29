@@ -1,6 +1,8 @@
 import 'package:c_valide/basics/BaseStatelessWidget.dart';
 import 'package:c_valide/pages/StepsPage.dart';
 import 'package:c_valide/res/HeroTags.dart';
+import 'package:c_valide/res/Strings.dart';
+import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/Page.dart';
 import 'package:flutter/material.dart';
 

@@ -113,7 +113,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
                 )
               : Container(),
           CButton(
-            Strings.textValidate,
+            Registry.folderValidated != 1 ? Strings.textValidate : Strings.textCancel,
             color: Colours.primaryColor,
             onPressed: () {
               Page.quitPage(context);

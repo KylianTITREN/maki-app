@@ -145,7 +145,8 @@ class _StepPage4State extends BaseState<StepPage4> {
                                     ? Column(
                                         children: <Widget>[
                                           SizedBox(height: 30),
-                                          Text('Merci de refaire signer le dossier',
+                                          Text(
+                                            'Merci de refaire signer le dossier',
                                             style: Styles.text(context),
                                             textAlign: TextAlign.center,
                                           ),
@@ -219,6 +220,32 @@ class _StepPage4State extends BaseState<StepPage4> {
                         ),
                       ),
                     ),
+                    Notifier.of(context).register<String>(Strings.notifyComment,
+                        (response) {
+                      print(_anomalies);
+                      String comment = response.hasData
+                          ? response.data
+                          : (Registry.comment?.isNotEmpty ?? false
+                              ? Registry.comment
+                              : '');
+
+                      return comment.isNotEmpty
+                          ? Column(
+                              children: <Widget>[
+                                SizedBox(height: 20),
+                                FlatButton(
+                                  onPressed: () {
+                                    _onAdvisorCommentBtnPressed(comment);
+                                  },
+                                  child: Text(
+                                    'Voir le commentaire du conseiller',
+                                    style: Styles.littleTextPrimary(context),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container();
+                    }),
                     Container(
                       margin: const EdgeInsets.only(top: 32.0),
                       child: CVideo(),
