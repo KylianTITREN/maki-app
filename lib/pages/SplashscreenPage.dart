@@ -12,6 +12,7 @@ import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/utils/Dialogs.dart';
 import 'package:c_valide/utils/Page.dart';
+import 'package:c_valide/utils/System.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -49,32 +50,63 @@ class SplashscreenPage extends BaseStatelessWidget {
 
   @override
   void onCreate() {
-    _requestsPending = 0;
-    _startAutoUpdateRequest(() {
-      if (App.serviceOpened(context)) {
-        _startTimer();
-        if (kReleaseMode || Const.DEMO) {
-          _startIsAdvisersAvailableRequest();
-//      _startIsServiceAvailableRequest();
-        }
-//    _startSharedPreferencesInitialization();
+    _startPackageInfoRequest(
+      onSuccess: () {
+        _startAutoUpdateRequest(
+          onSuccess: () {
+            if (App.serviceOpened(context)) {
+              _requestsPending = 0;
+              _startTimer();
+              if (kReleaseMode || Const.DEMO) {
+                _startIsAdvisersAvailableRequest();
+              }
+//          _startSharedPreferencesInitialization();
+            }
+          },
+        );
+      },
+      onFailed: () {
+        ChoicesDialog(
+          context,
+          Text(Strings.textErrorOccurred),
+          actions: {
+            'Quitter': () {
+              quitApp();
+            }
+          },
+        ).show();
+      },
+    );
+  }
+
+  _startPackageInfoRequest({VoidCallback onSuccess, VoidCallback onFailed}) {
+    System.getPackageInfo().then((packageInfo) {
+      App.packageInfo = packageInfo;
+      if (onSuccess != null) {
+        onSuccess();
+      }
+    }).catchError((object) {
+      print('Error: $object');
+      if (onFailed != null) {
+        onFailed();
       }
     });
   }
 
-  _startAutoUpdateRequest(VoidCallback onFailed) {
+  _startAutoUpdateRequest({VoidCallback onSuccess}) {
     VersionsClient.service
         .autoUpdate(Platform.isIOS ? FlavorConfig.instance.values.autoUpdateIdiOS : FlavorConfig.instance.values.autoUpdateIdAndroid)
         .then((response) {
-      _onAutoUpdate(response, onFailed);
+      _onAutoUpdate(response, onSuccess);
     }).catchError((object) {
+      print('Error: $object');
       ChoicesDialog(
         context,
         Text('${Strings.textErrorOccurred}. ${Strings.textTryAgain}'),
         actions: <String, VoidCallback>{
           Strings.textTryAgain: () {
             quitDialog(context);
-            _startAutoUpdateRequest(onFailed);
+            _startAutoUpdateRequest(onSuccess: onSuccess);
           },
           Strings.textQuit: () {
             quitApp();
@@ -114,7 +146,7 @@ class SplashscreenPage extends BaseStatelessWidget {
     }
   }
 
-  _onAutoUpdate(AutoUpdate response, VoidCallback onFailed) async {
+  _onAutoUpdate(AutoUpdate response, VoidCallback onSuccess) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String buildLocation = response.buildLocation;
@@ -126,12 +158,12 @@ class SplashscreenPage extends BaseStatelessWidget {
     int appPrefsBuildNumber = prefs.getInt(Strings.prefNeverThisBuildNumberAgain) ?? 0;
 
     if (servBuildNumber <= appBuildNumber) {
-      _onRequestsFinished();
+      onSuccess();
     } else {
       bool ignored = appPrefsBuildNumber >= appBuildNumber;
 
       if (ignored) {
-        onFailed();
+        onSuccess();
       } else {
         bool forced = lastForcedBuildnumber > appBuildNumber;
 
@@ -139,13 +171,13 @@ class SplashscreenPage extends BaseStatelessWidget {
         if (!forced) {
           actions['Plus tard'] = () {
             quitDialog(context);
-            onFailed();
+            onSuccess();
           };
 
           actions['Jamais'] = () {
             quitDialog(context);
             prefs.setInt(Strings.prefNeverThisBuildNumberAgain, servBuildNumber);
-            onFailed();
+            onSuccess();
           };
         }
 

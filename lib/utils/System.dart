@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info/package_info.dart';
 
 class System {
   /// Status bar dark icons and transparent background
@@ -10,5 +11,10 @@ class System {
         statusBarColor: Colors.transparent,
       ),
     );
+  }
+
+  /// Get package info
+  static Future<PackageInfo> getPackageInfo() async {
+    return await PackageInfo.fromPlatform();
   }
 }
