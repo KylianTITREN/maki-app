@@ -258,6 +258,10 @@ class _StepPage4State extends BaseState<StepPage4> {
                         onPressed: _onClose,
                       ),
                     ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 32.0),
+                      child: CVideo(),
+                    ),
                   ],
                 ),
               ),
@@ -266,9 +270,7 @@ class _StepPage4State extends BaseState<StepPage4> {
   }
 
   void _onClose() {
-    Registry.reset();
-
-    widget.parentState.goToFirstPage();
+    widget.parentState.restartStepsPage();
   }
 
   void _onAdvisorCommentBtnPressed(String comment) {
@@ -292,7 +294,7 @@ class _StepPage4State extends BaseState<StepPage4> {
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                Page.quitDialog(context);
+                quitDialog(context);
               },
               child: Text(Strings.textOk),
             ),

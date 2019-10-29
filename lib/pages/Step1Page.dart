@@ -1,3 +1,4 @@
+import 'package:c_valide/api/Requests.dart';
 import 'package:c_valide/app/Const.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
@@ -12,6 +13,7 @@ import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/DialogUtils.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:c_valide/utils/Page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class StepPage1 extends BaseStatefulWidget {
@@ -64,8 +66,7 @@ class _StepPage1State extends BaseState<StepPage1> {
                   Container(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(maxWidth: mq.size.width * 0.6),
+                      constraints: BoxConstraints(maxWidth: mq.size.width * 0.6),
                       child: Text(
                         Strings.textBelowLogoDescription,
                         style: Styles.description(context),
@@ -122,8 +123,7 @@ class _StepPage1State extends BaseState<StepPage1> {
 
                                   if (Registry.folderNumber.length == 0) {
                                     return Strings.warnFillThisField;
-                                  } else if (Registry.folderNumber.length <
-                                      Const.MAX_FOLDER_NUMBER_LENGTH) {
+                                  } else if (Registry.folderNumber.length < Const.MAX_FOLDER_NUMBER_LENGTH) {
                                     return Strings.warnFolderNumberInvalid;
                                   }
 
@@ -132,21 +132,18 @@ class _StepPage1State extends BaseState<StepPage1> {
                                 decoration: InputDecoration(
                                   counterText: '',
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
                                     borderSide: BorderSide(
                                       color: Colors.black54,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
+                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
                                     borderSide: BorderSide(
                                       color: Colors.black54,
                                     ),
                                   ),
-                                  contentPadding: EdgeInsets.only(
-                                      left: 8.0, right: 8.0, top: 32.0),
+                                  contentPadding: EdgeInsets.only(left: 8.0, right: 8.0, top: 32.0),
                                   filled: true,
                                   fillColor: Colours.field,
                                   hintText: Strings.hintFolderNumber,
@@ -193,6 +190,13 @@ class _StepPage1State extends BaseState<StepPage1> {
   }
 
   void _onValidateForm() {
+    if (_formKey.currentState.validate()) {
+      dismissKeyboard(context);
+      _onValidate();
+    }
+  }
+
+  void _onValidate() {
     if (DateTime.now().hour < 9 || DateTime.now().hour > 20) {
       showDialog(
         context: context,
@@ -207,15 +211,14 @@ class _StepPage1State extends BaseState<StepPage1> {
                     style: Styles.appBarTitle(context),
                   ),
                   SizedBox(height: 8.0),
-                  Text(
-                      'Les services ne sont disponibles qu\'entre 9h et 20h. Veuillez réessayer plus tard.'),
+                  Text('${Strings.textServiceAvailableBetween}. ${Strings.textTryAgainLater}.'),
                 ],
               ),
             ),
             actions: <Widget>[
               FlatButton(
                 onPressed: () {
-                  Page.quitDialog(context);
+                  quitDialog(context);
                 },
                 child: Text(Strings.textOk),
               ),
@@ -224,15 +227,29 @@ class _StepPage1State extends BaseState<StepPage1> {
         },
       );
     } else {
-      if (_formKey.currentState.validate()) {
-        Page.dismissKeyboard(context);
-        _onValidate();
+      DialogUtils.showLoading(context, text: "Chargement");
+      if (kReleaseMode || Const.DEMO) {
+        _startIsAdvisersAvailableRequest();
+      } else {
+        _startCreateFolderRequest();
       }
     }
   }
 
-  void _onValidate() {
-    DialogUtils.showLoading(context, text: "Chargement");
+  void _startIsAdvisersAvailableRequest() {
+    Requests.isAdvisersAvailable(
+      context,
+      quitApp: false,
+      onSuccess: () {
+        _startCreateFolderRequest();
+      },
+      onFailed: () {
+        DialogUtils.dismiss(context);
+      },
+    );
+  }
+
+  void _startCreateFolderRequest() {
     FirebaseUtils.createFolder(Registry.folderNumber, callback: (String uid) {
       DialogUtils.dismiss(context);
       Registry.uid = uid;

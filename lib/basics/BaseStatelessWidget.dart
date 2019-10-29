@@ -1,4 +1,3 @@
-import 'package:c_valide/utils/Page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,6 +24,6 @@ abstract class BaseStatelessWidget extends StatelessWidget {
   }
 
   void delay(VoidCallback callback, int duration) {
-    Page.delay(callback, duration);
+    delay(callback, duration);
   }
 }

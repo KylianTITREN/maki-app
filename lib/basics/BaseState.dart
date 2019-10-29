@@ -1,4 +1,3 @@
-import 'package:c_valide/utils/Page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -73,6 +72,6 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> with Widgets
   }
 
   delay(VoidCallback callback, int duration) {
-    Page.delay(callback, duration);
+    delay(callback, duration);
   }
 }

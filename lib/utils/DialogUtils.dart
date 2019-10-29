@@ -33,6 +33,6 @@ class DialogUtils extends BaseStatelessWidget {
   }
 
   static void dismiss(BuildContext context) {
-    Page.quitPage(context);
+    quitPage(context);
   }
 }

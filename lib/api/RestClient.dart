@@ -1,22 +1,27 @@
 import 'dart:io';
 
+import 'package:c_valide/FlavorConfig.dart';
+import 'package:c_valide/models/AdvisorAvailability.dart';
 import 'package:c_valide/models/Anomalies.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
 part 'RestClient.g.dart';
 
-@RestApi(baseUrl: "https://c-visite.fr/c-anomalie-add-on-r7/public/index.php/")
+@RestApi()
 abstract class RestClient {
   static RestClient instance([Dio dio]) => _RestClient(dio);
-  static RestClient service = initialize();
+  static RestClient service = initialize(60000, 'application/x-www-form-urlencoded');
+  static RestClient fastTimeout = initialize(2000);
 
-  static RestClient initialize() {
+  static RestClient initialize(int timeout, [String contentType]) {
     final dio = Dio();
-    dio.options.baseUrl = "https://c-visite.fr/c-anomalie-add-on-r7/public/index.php/";
-    dio.options.contentType = ContentType.parse("application / x-www-form-urlencoded");
-    dio.options.connectTimeout = 60000;
-    dio.options.receiveTimeout = 60000;
+    dio.options.baseUrl = FlavorConfig.instance.values.apiBaseUrl;
+    if (contentType != null) {
+      dio.options.contentType = ContentType.parse(contentType);
+    }
+    dio.options.connectTimeout = timeout;
+    dio.options.receiveTimeout = timeout;
     final client = RestClient.instance(dio);
 
     return client;
@@ -43,5 +48,10 @@ abstract class RestClient {
     @Path('uid') String uid,
     @Path('anomalieTypeId') String anomalieTypeId,
     @Field('document') File file,
+  );
+
+  @GET("advisers/is-available")
+  Future<AdvisorAvailability> isAdvisersAvailable(
+    @Query('token') String token,
   );
 }

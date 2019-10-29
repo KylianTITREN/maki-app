@@ -70,7 +70,7 @@ class _StepPage2State extends BaseState<StepPage2> {
                   child: Notifier.of(context).register<bool>(Strings.notifyNoAdvisor, (_) {
                     return Text(
                       _.hasData && _.data
-                          ? Strings.textNoFreeAdvisor
+                          ? '${Strings.textNoFreeAdvisor}. ${Strings.textServiceAvailableBetween}.'
                           : Strings.textWaitingForAdvisor,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,

@@ -27,7 +27,7 @@ class FirebaseUtils {
         callback(reference.key);
       }
     }).catchError((error) {
-      Page.toast(Strings.textErrorOccurred);
+      toast(Strings.textErrorOccurred);
     });
   }
 
@@ -45,7 +45,7 @@ class FirebaseUtils {
         callback(reference.key);
       }
     }).catchError((error) {
-      Page.toast(Strings.textErrorOccurred);
+      toast(Strings.textErrorOccurred);
     });
   }
 
@@ -66,7 +66,7 @@ class FirebaseUtils {
       }
     }).catchError((error) {
       print('ERROR: $error');
-      Page.toast(Strings.textErrorOccurred);
+      toast(Strings.textErrorOccurred);
     });
   }
 

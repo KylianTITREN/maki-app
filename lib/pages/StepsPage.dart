@@ -15,6 +15,7 @@ import 'package:c_valide/pages/Step4Page.dart';
 import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
+import 'package:c_valide/utils/Page.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:notifier/notifier.dart';
@@ -93,8 +94,8 @@ class StepsPageState extends BaseState<StepsPage> {
             }
           case 'REFUSED':
             {
+              cancelSubscription();
               Registry.folderValidated = 0;
-              _startAnomaliesRequests();
               goToPage(3);
               break;
             }
@@ -154,7 +155,7 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void _onRequestFinished() {
     if (--_requestsPending == 0) {
-      Registry.folderValidated == 1 || Registry.folderValidated == 0
+      Registry.folderValidated == 1
           ? _subscription?.cancel()
           : goToPage(2);
     }
@@ -162,85 +163,114 @@ class StepsPageState extends BaseState<StepsPage> {
 
   @override
   Widget onBuild() {
-    return CPage(
-      child: ThreePartsPage(
-        middleExpanded: true,
-        top: Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            margin: const EdgeInsets.only(top: 28.0, bottom: 0),
-            child: _currentStep > 0
-                ? CStepProgressBar(
-                    <CStep>[
-                      CStep(
-                        "Saisie",
-                        Image.asset(
-                          "assets/images/writer.png",
-                          height: 20,
-                          width: 20,
-                        ),
-                      ),
-                      CStep(
-                        "Prise en charge",
-                        Image.asset(
-                          "assets/images/flashlight.png",
-                          height: 20,
-                          width: 20,
-                        ),
-                        duration: 60000 * 5, // 5 minutes
-                        onLoadingFinished: () {
-                          if (_currentStep == 1) {
-                            FirebaseUtils.deleteFolder(Registry.uid, callback: () {
-                              Registry.reset();
-                            });
+    return WillPopScope(
+      onWillPop: () async {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    quitDialog(context);
+                  },
+                  child: Text(Strings.textNo),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    quitDialog(context);
+                    restartStepsPage();
+                  },
+                  child: Text(Strings.textYes),
+                ),
+              ],
+              content: Text(Strings.textAreYouSureToLeave),
+            );
+          },
+        );
 
-                            NotifierProvider.of(context).notify(
-                              Strings.notifyNoAdvisor,
-                              true,
-                            );
-                          }
-                        },
-                      ),
-                      CStep(
-                        "Validation",
-                        Image.asset(
-                          "assets/images/checker.png",
-                          height: 20,
-                          width: 20,
+        return false;
+      },
+      child: CPage(
+        child: ThreePartsPage(
+          middleExpanded: true,
+          top: Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: const EdgeInsets.only(top: 28.0, bottom: 0),
+              child: _currentStep > 0
+                  ? CStepProgressBar(
+                      <CStep>[
+                        CStep(
+                          "Saisie",
+                          Image.asset(
+                            "assets/images/writer.png",
+                            height: 20,
+                            width: 20,
+                          ),
                         ),
-                      ),
-                      CStep(
-                        "Décision",
-                        Image.asset(
-                          "assets/images/star.png",
-                          height: 20,
-                          width: 20,
+                        CStep(
+                          "Prise en charge",
+                          Image.asset(
+                            "assets/images/flashlight.png",
+                            height: 20,
+                            width: 20,
+                          ),
+                          duration: 60000 * 5, // 5 minutes
+                          onLoadingFinished: () {
+                            if (_currentStep == 1) {
+                              FirebaseUtils.deleteFolder(Registry.uid, callback: () {
+                                Registry.reset();
+                              });
+
+                              NotifierProvider.of(context).notify(
+                                Strings.notifyNoAdvisor,
+                                true,
+                              );
+                            }
+                          },
                         ),
-                        duration: -1,
-                      ),
-                    ],
-                    currentStep: _currentStep,
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  )
-                : Container(),
+                        CStep(
+                          "Validation",
+                          Image.asset(
+                            "assets/images/checker.png",
+                            height: 20,
+                            width: 20,
+                          ),
+                        ),
+                        CStep(
+                          "Décision",
+                          Image.asset(
+                            "assets/images/star.png",
+                            height: 20,
+                            width: 20,
+                          ),
+                          duration: -1,
+                        ),
+                      ],
+                      currentStep: _currentStep,
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    )
+                  : Container(),
+            ),
           ),
-        ),
-        middle: PageView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _pageController,
-          children: _pageViews,
-        ),
-        bottom: Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 25.0),
-            child: Hero(
-              tag: HeroTags.cacfLogo,
-              child: Material(
-                color: Colors.transparent,
-                child: Image.asset(
-                  "assets/images/cacf.png",
-                  height: 27.0,
+          middle: PageView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: _pageController,
+            children: _pageViews,
+          ),
+          bottom: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 25.0),
+              child: Hero(
+                tag: HeroTags.cacfLogo,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Image.asset(
+                    "assets/images/cacf.png",
+                    height: 27.0,
+                  ),
                 ),
               ),
             ),
@@ -253,6 +283,12 @@ class StepsPageState extends BaseState<StepsPage> {
   int get currentStep => _currentStep;
 
   String get currentState => _currentState;
+
+  void restartStepsPage() {
+    Registry.reset();
+
+    goToFirstPage();
+  }
 
   void goToFirstPage() {
     _currentStep = 0;

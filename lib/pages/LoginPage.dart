@@ -238,13 +238,13 @@ class LoginPageState extends BaseState<LoginPage> {
 
   void _onValidateForm() {
     if (_formKey.currentState.validate()) {
-      Page.dismissKeyboard(context);
+      dismissKeyboard(context);
       _onLogin();
     }
   }
 
   void _onLogin() {
     _saveIsLogged();
-    Page.replacePage(context, StepsPage());
+    replacePage(context, StepsPage());
   }
 }

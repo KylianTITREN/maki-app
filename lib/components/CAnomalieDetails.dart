@@ -116,7 +116,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
             Registry.folderValidated != 1 ? Strings.textValidate : Strings.textCancel,
             color: Colours.primaryColor,
             onPressed: () {
-              Page.quitPage(context);
+              quitPage(context);
             },
           ),
           SizedBox(height: 25)
@@ -146,7 +146,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                Page.quitDialog(context);
+                quitDialog(context);
               },
               child: Text(Strings.textOk),
             ),
@@ -165,14 +165,14 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                Page.quitPage(context);
+                quitPage(context);
                 removeFile(file);
               },
               child: Text(Strings.textErase),
             ),
             FlatButton(
               onPressed: () {
-                Page.quitPage(context);
+                quitPage(context);
               },
               child: Text(Strings.textCancel),
             ),
@@ -195,7 +195,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
               FlatButton(
                 textColor: Colours.primaryColor,
                 onPressed: () {
-                  Page.quitPage(context);
+                  quitPage(context);
                   pickPDF();
                 },
                 child: Row(
@@ -220,7 +220,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
               FlatButton(
                 textColor: Colours.primaryColor,
                 onPressed: () {
-                  Page.quitPage(context);
+                  quitPage(context);
                   pickImage();
                 },
                 child: Row(
@@ -245,7 +245,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
               FlatButton(
                 textColor: Colours.primaryColor,
                 onPressed: () {
-                  Page.quitPage(context);
+                  quitPage(context);
                   openCamera();
                 },
                 child: Row(

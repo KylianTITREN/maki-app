@@ -198,7 +198,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                Page.quitDialog(context);
+                quitDialog(context);
               },
               child: Text(Strings.textOk),
             ),
@@ -230,7 +230,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
     if (_anomalies.every((anomalie) => anomalie.isResolved)) {
       _sendDocuments();
     }else {
-      Page.toast(Strings.textUploadDocumentsPlease);
+      toast(Strings.textUploadDocumentsPlease);
     }
     if (_anomalies.every((anomalie) => !anomalie.pictureNeeded)) {
       _sendDocuments();
@@ -255,7 +255,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
           requestsPending++;
           RestClient.service
               .sendDocument(
-            Const.SEND_DOCUMENT_TOKEN,
+            Const.API_TOKEN,
             Registry.uid,
             anomalie.idType,
             file,
