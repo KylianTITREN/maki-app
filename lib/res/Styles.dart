@@ -20,6 +20,14 @@ class Styles {
     );
   }
 
+  static TextStyle popupTitle(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: 20.0,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
   static TextStyle title(BuildContext context) {
     return TextStyle(
       color: Colours.primaryColor,
@@ -76,9 +84,38 @@ class Styles {
     );
   }
 
-  static InputDecoration textField(BuildContext context, [String hint]) {
+  static InputDecoration editText(BuildContext context, {String hint}) {
+    return InputDecoration(
+      counterText: '',
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderSide: BorderSide(
+          color: Colors.black54,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderSide: BorderSide(
+          color: Colors.black54,
+        ),
+      ),
+      contentPadding: EdgeInsets.only(left: 8.0, right: 8.0, top: 32.0),
+      filled: true,
+      fillColor: Colours.field,
+      hintText: hint,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(5.0),
+          bottomRight: Radius.circular(5.0),
+        ),
+      ),
+    );
+  }
+
+  static InputDecoration textField(BuildContext context, {String hint, Color hintColor}) {
     return InputDecoration(
       labelText: hint ?? '',
+      hintStyle: TextStyle(fontSize: 14.0, color: hintColor ?? Colors.black),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(24.0)),
     );
   }

@@ -50,6 +50,20 @@ abstract class RestClient {
     @Field('document') File file,
   );
 
+  @FormUrlEncoded()
+  @PUT("mobile-folders/{uid}")
+//  @Headers({
+//    "Accept": "application/json",
+//    "Host": "c-visite.fr",
+//    "Content-Type": "application/x-www-form-urlencoded",
+//  })
+  Future<void> sendSatisfactionResult(
+    @Query('token') String token,
+    @Path('uid') String uid,
+    @Field('score') int score,
+    @Field('score_comment') String scoreComment,
+  );
+
   @GET("advisers/is-available")
   Future<AdvisorAvailability> isAdvisersAvailable(
     @Query('token') String token,

@@ -6,6 +6,7 @@ import 'package:c_valide/basics/BaseState.dart';
 import 'package:c_valide/basics/BaseStatefulWidget.dart';
 import 'package:c_valide/components/CPage.dart';
 import 'package:c_valide/components/CStepProgressBar.dart';
+import 'package:c_valide/components/SatisfactionPopup.dart';
 import 'package:c_valide/components/ThreePartsPage.dart';
 import 'package:c_valide/models/Anomalies.dart';
 import 'package:c_valide/pages/Step1Page.dart';
@@ -94,8 +95,8 @@ class StepsPageState extends BaseState<StepsPage> {
             }
           case 'REFUSED':
             {
-              cancelSubscription();
               Registry.folderValidated = 0;
+              _startAnomaliesRequests();
               goToPage(3);
               break;
             }
@@ -155,9 +156,9 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void _onRequestFinished() {
     if (--_requestsPending == 0) {
-      Registry.folderValidated == 1
-          ? _subscription?.cancel()
-          : goToPage(2);
+      Registry.folderValidated == 0 || Registry.folderValidated == 1
+        ? cancelSubscription()
+        : goToPage(2);
     }
   }
 
@@ -285,6 +286,8 @@ class StepsPageState extends BaseState<StepsPage> {
   String get currentState => _currentState;
 
   void restartStepsPage() {
+    cancelSubscription();
+
     Registry.reset();
 
     goToFirstPage();
@@ -313,5 +316,15 @@ class StepsPageState extends BaseState<StepsPage> {
     );
 
     setState(() {});
+  }
+
+  void onStepsOver([VoidCallback callback]) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return SatisfactionPopup(callback);
+      },
+    );
   }
 }

@@ -130,31 +130,7 @@ class _StepPage1State extends BaseState<StepPage1> {
 
                                   return null;
                                 },
-                                decoration: InputDecoration(
-                                  counterText: '',
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                    borderSide: BorderSide(
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                    borderSide: BorderSide(
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                  contentPadding: EdgeInsets.only(left: 8.0, right: 8.0, top: 32.0),
-                                  filled: true,
-                                  fillColor: Colours.field,
-                                  hintText: Strings.hintFolderNumber,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(5.0),
-                                      bottomRight: Radius.circular(5.0),
-                                    ),
-                                  ),
-                                ),
+                                decoration: Styles.editText(context, hint: Strings.hintFolderNumber),
                               ),
                             ),
                           ),

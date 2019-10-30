@@ -32,7 +32,7 @@ class FirebaseUtils {
   }
 
   static void setFolderState(String uid, String state, {CreateCallback callback}) {
-    assert(uid != null && state != null);
+    assert(uid != null && uid.isNotEmpty && state != null);
 
     DatabaseReference reference = FirebaseDatabase.instance
         .reference()
@@ -65,7 +65,7 @@ class FirebaseUtils {
         callback(snapshot.value);
       }
     }).catchError((error) {
-      print('ERROR: $error');
+      print('Error: $error');
       toast(Strings.textErrorOccurred);
     });
   }

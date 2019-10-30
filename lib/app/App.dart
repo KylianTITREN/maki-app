@@ -57,9 +57,7 @@ class App {
     DateTime now = DateTime.now();
     bool serviceOpened = now.hour >= 9 && now.hour < 20;
 
-    print("Is service opened now: ${now.hour}");
     if (!serviceOpened) {
-      print("It's not opened");
       showDialog(
         context: context,
         builder: (context) {
@@ -88,8 +86,6 @@ class App {
           );
         },
       );
-    } else {
-      print("It's opened !");
     }
 
     return serviceOpened;

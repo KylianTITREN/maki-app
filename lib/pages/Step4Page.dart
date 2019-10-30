@@ -53,9 +53,7 @@ class _StepPage4State extends BaseState<StepPage4> {
           ? Notifier.of(context).register<List<Anomalie>>(
               Strings.notifyAnomalies,
               (anomalies) {
-                if (widget.parentState.currentState == 'CANCELED' &&
-                    _anomalies != null &&
-                    _anomalies.length <= 0) {
+                if (widget.parentState.currentState == 'CANCELED' && _anomalies != null && _anomalies.length <= 0) {
                   _anomalies = anomalies.hasData ? anomalies.data : [];
                 }
 
@@ -94,17 +92,12 @@ class _StepPage4State extends BaseState<StepPage4> {
                                   Text(
                                     _anomalies.length == 1
                                         ? sprintf(
-                                            Strings
-                                                .textCanceledAnomalieFolderNumber,
+                                            Strings.textCanceledAnomalieFolderNumber,
                                             [Registry.folderNumber],
                                           )
                                         : sprintf(
-                                            Strings
-                                                .textCanceledAnomaliesFolderNumber,
-                                            [
-                                              Registry.folderNumber,
-                                              _anomalies.length
-                                            ],
+                                            Strings.textCanceledAnomaliesFolderNumber,
+                                            [Registry.folderNumber, _anomalies.length],
                                           ),
                                     style: Styles.text(context),
                                     textAlign: TextAlign.center,
@@ -132,14 +125,10 @@ class _StepPage4State extends BaseState<StepPage4> {
                                   },
                                 ),
                               ),
-                              Notifier.of(context).register<String>(
-                                  Strings.notifyComment, (response) {
+                              Notifier.of(context).register<String>(Strings.notifyComment, (response) {
                                 print(response);
-                                String comment = response.hasData
-                                    ? response.data
-                                    : (Registry.comment?.isNotEmpty ?? false
-                                        ? Registry.comment
-                                        : '');
+                                String comment =
+                                    response.hasData ? response.data : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
 
                                 return comment.isNotEmpty
                                     ? Column(
@@ -152,13 +141,11 @@ class _StepPage4State extends BaseState<StepPage4> {
                                           ),
                                           FlatButton(
                                             onPressed: () {
-                                              _onAdvisorCommentBtnPressed(
-                                                  comment);
+                                              _onAdvisorCommentBtnPressed(comment);
                                             },
                                             child: Text(
                                               'Voir le commentaire du conseiller',
-                                              style: Styles.littleTextPrimary(
-                                                  context),
+                                              style: Styles.littleTextPrimary(context),
                                             ),
                                           ),
                                         ],
@@ -190,9 +177,7 @@ class _StepPage4State extends BaseState<StepPage4> {
                         color: Colors.transparent,
                         child: Text(
                           sprintf(
-                            Registry.folderValidated == 2
-                                ? Strings.textFolderValidated
-                                : Strings.textFolderDeclined,
+                            Registry.folderValidated == 2 ? Strings.textFolderValidated : Strings.textFolderDeclined,
                             [Registry.folderNumber],
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -220,14 +205,9 @@ class _StepPage4State extends BaseState<StepPage4> {
                         ),
                       ),
                     ),
-                    Notifier.of(context).register<String>(Strings.notifyComment,
-                        (response) {
+                    Notifier.of(context).register<String>(Strings.notifyComment, (response) {
                       print(_anomalies);
-                      String comment = response.hasData
-                          ? response.data
-                          : (Registry.comment?.isNotEmpty ?? false
-                              ? Registry.comment
-                              : '');
+                      String comment = response.hasData ? response.data : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
 
                       return comment.isNotEmpty
                           ? Column(
@@ -246,10 +226,6 @@ class _StepPage4State extends BaseState<StepPage4> {
                             )
                           : Container();
                     }),
-                    Container(
-                      margin: const EdgeInsets.only(top: 32.0),
-                      child: CVideo(),
-                    ),
                     Container(
                       padding: const EdgeInsets.only(top: 32.0),
                       child: CButton(
@@ -271,6 +247,11 @@ class _StepPage4State extends BaseState<StepPage4> {
 
   void _onClose() {
     widget.parentState.restartStepsPage();
+
+    // TODO Satisfaction a réactiver quand le WS sera bon
+//    widget.parentState.onStepsOver(() {
+//      delay(widget.parentState.restartStepsPage, 300);
+//    });
   }
 
   void _onAdvisorCommentBtnPressed(String comment) {

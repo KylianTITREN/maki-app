@@ -24,7 +24,6 @@ import 'package:url_launcher/url_launcher.dart';
 class SplashscreenPage extends BaseStatefulWidget {
   @override
   State<StatefulWidget> onBuild() => SplashscreenPageState();
-
 }
 
 class SplashscreenPageState extends BaseState<SplashscreenPage> {
