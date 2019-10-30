@@ -12,6 +12,7 @@ part 'RestClient.g.dart';
 abstract class RestClient {
   static RestClient instance([Dio dio]) => _RestClient(dio);
   static RestClient service = initialize(60000, 'application/x-www-form-urlencoded');
+  static RestClient jsonService = initialize(60000, 'application/json');
   static RestClient fastTimeout = initialize(2000);
 
   static RestClient initialize(int timeout, [String contentType]) {
@@ -50,13 +51,12 @@ abstract class RestClient {
     @Field('document') File file,
   );
 
-  @FormUrlEncoded()
-  @PUT("mobile-folders/{uid}")
-//  @Headers({
-//    "Accept": "application/json",
-//    "Host": "c-visite.fr",
-//    "Content-Type": "application/x-www-form-urlencoded",
-//  })
+  @POST("mobile-folders/{uid}/satisfaction")
+  @Headers({
+    "Accept": "application/json",
+    "Host": "c-visite.fr",
+    "Content-Type": "application/json",
+  })
   Future<void> sendSatisfactionResult(
     @Query('token') String token,
     @Path('uid') String uid,

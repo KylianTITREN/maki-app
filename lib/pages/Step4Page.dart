@@ -135,7 +135,7 @@ class _StepPage4State extends BaseState<StepPage4> {
                                         children: <Widget>[
                                           SizedBox(height: 30),
                                           Text(
-                                            'Merci de refaire signer le dossier',
+                                            Strings.textThanksToResignTheFolder,
                                             style: Styles.text(context),
                                             textAlign: TextAlign.center,
                                           ),
@@ -144,7 +144,7 @@ class _StepPage4State extends BaseState<StepPage4> {
                                               _onAdvisorCommentBtnPressed(comment);
                                             },
                                             child: Text(
-                                              'Voir le commentaire du conseiller',
+                                              Strings.textSeeAdvisorComment,
                                               style: Styles.littleTextPrimary(context),
                                             ),
                                           ),
@@ -218,7 +218,7 @@ class _StepPage4State extends BaseState<StepPage4> {
                                     _onAdvisorCommentBtnPressed(comment);
                                   },
                                   child: Text(
-                                    'Voir le commentaire du conseiller',
+                                    Strings.textSeeAdvisorComment,
                                     style: Styles.littleTextPrimary(context),
                                   ),
                                 ),
@@ -246,12 +246,9 @@ class _StepPage4State extends BaseState<StepPage4> {
   }
 
   void _onClose() {
-    widget.parentState.restartStepsPage();
-
-    // TODO Satisfaction a réactiver quand le WS sera bon
-//    widget.parentState.onStepsOver(() {
-//      delay(widget.parentState.restartStepsPage, 300);
-//    });
+    widget.parentState.onStepsOver(() {
+      delay(widget.parentState.restartStepsPage, 300);
+    });
   }
 
   void _onAdvisorCommentBtnPressed(String comment) {

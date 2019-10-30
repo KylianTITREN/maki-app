@@ -42,6 +42,8 @@ class Strings {
   static String textTryAgainLater = "Veuillez réessayer plus tard";
   static String textTryAgain = 'Réessayer';
   static String textDownloadFailed = 'Téléchargement échoué';
+  static String textThanksToResignTheFolder = 'Cette erreur nécessite que vous remontiez un dossier entièrement en faisant attention à l’erreur mentionné et au commentaire du conseiller. Une fois que vous avez refait le dossier entièrement (y compris la signature), redemandez une validation en temps réel via cette application';
+  static String textSeeAdvisorComment = 'Voir le commentaire du conseiller';
 
   static String hintPassword = 'Mot de passe';
   static String hintFolderNumber = 'N° de dossier';

@@ -52,22 +52,30 @@ class StepsPageState extends BaseState<StepsPage> {
 
   @override
   void onResume() {
-    FirebaseUtils.setFolderState(Registry.uid, currentState);
+    if (currentStep > 0) {
+      FirebaseUtils.setFolderState(Registry.uid, currentState);
+    }
   }
 
   @override
   void onSuspend() {
-    FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+    if (currentStep > 0) {
+      FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+    }
   }
 
   @override
   void onInactive() {
-    FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+    if (currentStep > 0) {
+      FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+    }
   }
 
   @override
   void onPause() {
-    FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+    if (currentStep > 0) {
+      FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
+    }
   }
 
   void initSubscription() {
@@ -156,9 +164,7 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void _onRequestFinished() {
     if (--_requestsPending == 0) {
-      Registry.folderValidated == 0 || Registry.folderValidated == 1
-        ? cancelSubscription()
-        : goToPage(2);
+      Registry.folderValidated == 0 || Registry.folderValidated == 1 ? cancelSubscription() : goToPage(2);
     }
   }
 
@@ -180,7 +186,7 @@ class StepsPageState extends BaseState<StepsPage> {
                 FlatButton(
                   onPressed: () {
                     quitDialog(context);
-                    restartStepsPage();
+                    FirebaseUtils.deleteFolder(Registry.uid, callback: restartStepsPage);
                   },
                   child: Text(Strings.textYes),
                 ),

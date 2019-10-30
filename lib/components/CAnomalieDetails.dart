@@ -295,7 +295,7 @@ class _CAnomalieDetailsState extends State<CAnomalieDetails> {
   }
 
   void openCamera() async {
-    File file = await ImagePicker.pickImage(source: ImageSource.camera);
+    File file = await ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 70);
     addFile(file);
   }
 }

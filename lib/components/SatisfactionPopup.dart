@@ -41,7 +41,7 @@ class SatisfactionPopupState extends BaseState<SatisfactionPopup> {
               } else {
                 dismissKeyboard(context);
                 DialogUtils.showLoading(context, text: 'Chargement');
-                RestClient.service.sendSatisfactionResult(Const.API_TOKEN, Registry.uid, _score.toInt(), _scoreComment).then((response) {
+                RestClient.jsonService.sendSatisfactionResult(Const.API_TOKEN, Registry.uid, _score.toInt(), _scoreComment).then((response) {
                   DialogUtils.dismiss(context);
                   print('Satisfaction sent !');
                   quitDialog(context);

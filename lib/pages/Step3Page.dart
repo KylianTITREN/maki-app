@@ -67,9 +67,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
       child: Notifier.of(context).register<List<Anomalie>>(
         Strings.notifyAnomalies,
         (anomalies) {
-          if (widget.parentState.currentState == 'ANOMALIES' &&
-              _anomalies != null &&
-              _anomalies.length <= 0) {
+          if (widget.parentState.currentState == 'ANOMALIES' && _anomalies != null && _anomalies.length <= 0) {
             _anomalies = anomalies.hasData ? anomalies.data : [];
           }
 
@@ -142,9 +140,8 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                           ),
                         ),
                         Notifier.of(context).register<String>(Strings.notifyComment, (response) {
-                          String comment = response.hasData
-                              ? response.data
-                              : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
+                          String comment =
+                              response.hasData ? response.data : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
 
                           return comment.isNotEmpty
                               ? FlatButton(
@@ -152,7 +149,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                                     _onAdvisorCommentBtnPressed(comment);
                                   },
                                   child: Text(
-                                    'Voir le commentaire du conseiller',
+                                    Strings.textSeeAdvisorComment,
                                     style: Styles.littleTextPrimary(context),
                                   ),
                                 )
@@ -229,7 +226,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
   void _onValidate() {
     if (_anomalies.every((anomalie) => anomalie.isResolved)) {
       _sendDocuments();
-    }else {
+    } else {
       toast(Strings.textUploadDocumentsPlease);
     }
     if (_anomalies.every((anomalie) => !anomalie.pictureNeeded)) {
@@ -251,8 +248,9 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
       }, 4000);
     } else {
       _anomalies.forEach((anomalie) {
-        anomalie.filesAssociated.forEach((file) {
+        anomalie.filesAssociated.forEach((file) async {
           requestsPending++;
+
           RestClient.service
               .sendDocument(
             Const.API_TOKEN,
