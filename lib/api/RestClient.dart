@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:c_valide/FlavorConfig.dart';
-import 'package:c_valide/models/AdvisorAvailability.dart';
 import 'package:c_valide/models/Anomalies.dart';
+import 'package:c_valide/models/Availability.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -65,7 +65,7 @@ abstract class RestClient {
   );
 
   @GET("advisers/is-available")
-  Future<AdvisorAvailability> isAdvisersAvailable(
+  Future<Availability> areServicesAvailable(
     @Query('token') String token,
   );
 }

@@ -17,6 +17,7 @@ import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/DialogUtils.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:c_valide/utils/Page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notifier/main_notifier.dart';
 import 'package:sprintf/sprintf.dart';
@@ -237,7 +238,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
   void _sendDocuments() {
     DialogUtils.showLoading(context, text: Strings.textLoading);
 
-    if (Const.DEMO) {
+    if (!kReleaseMode && Const.DEMO) {
       delay(() {
         FirebaseUtils.setFolderState(Registry.uid, 'VALIDATED', callback: (uid) {
           DialogUtils.dismiss(context);

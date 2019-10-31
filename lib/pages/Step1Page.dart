@@ -1,5 +1,4 @@
 import 'package:c_valide/api/Requests.dart';
-import 'package:c_valide/app/App.dart';
 import 'package:c_valide/app/Const.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
@@ -174,18 +173,16 @@ class _StepPage1State extends BaseState<StepPage1> {
   }
 
   void _onValidate() {
-    if (App.serviceOpened(context)) {
       DialogUtils.showLoading(context, text: "Chargement");
-      if (kReleaseMode || Const.DEMO) {
-        _startIsAdvisersAvailableRequest();
+      if (kReleaseMode || Const.TEST_MODE) {
+        _startAreServicesAvailableRequest();
       } else {
         _startCreateFolderRequest();
       }
-    }
   }
 
-  void _startIsAdvisersAvailableRequest() {
-    Requests.isAdvisersAvailable(
+  void _startAreServicesAvailableRequest() {
+    Requests.areServicesAvailable(
       context,
       quitApp: false,
       onSuccess: () {

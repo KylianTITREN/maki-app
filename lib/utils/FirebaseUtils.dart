@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:c_valide/FlavorConfig.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/utils/Page.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,7 +10,7 @@ typedef void CreateCallback(String uid);
 typedef void StateChangedCallback(String state);
 
 class FirebaseUtils {
-  static const String parentFolder = 'test';
+  static String parentFolder = FlavorConfig.isProduction() ? 'prod' : 'test';
 
   static void createFolder(String folderNumber, {CreateCallback callback}) {
     if (folderNumber != null) {

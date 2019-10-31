@@ -6,24 +6,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Requests {
-  static void isAdvisersAvailable(BuildContext context, {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
-    RestClient.fastTimeout.isAdvisersAvailable(Const.API_TOKEN).then((response) {
-      if (response?.isAvailable ?? false) {
-        if (onSuccess != null) {
-          onSuccess();
-        }
-      } else {
+  static void areServicesAvailable(BuildContext context, {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
+    RestClient.fastTimeout.areServicesAvailable(Const.API_TOKEN).then((response) {
+      bool isAvailable = response?.isAvailable ?? false;
+      bool isOpenHours = response?.isOpenHours ?? false;
+
+      print('Is available: $isAvailable');
+      print('Is open hours: $isOpenHours');
+
+      if (!isAvailable) {
         if (onFailed != null) {
           onFailed();
         }
-        _showAdvisorsNonAvailableDialog(context, quitApp);
+        _showNonAvailableDialog(context, Strings.textNoFreeAdvisor, quitApp);
+      } else if (!isOpenHours) {
+        if (onFailed != null) {
+          onFailed();
+        }
+        _showNonAvailableDialog(context, Strings.textServiceAvailableBetween, quitApp);
+      } else {
+        if (onSuccess != null) {
+          onSuccess();
+        }
       }
     }).catchError((object) {
-      _showAdvisorsNonAvailableDialog(context, quitApp);
+      print('Error: $object');
+      _showNonAvailableDialog(context, Strings.textErrorOccurred, quitApp);
     });
   }
 
-  static void _showAdvisorsNonAvailableDialog(BuildContext context, [bool shouldQuitApp = true]) {
+  static void _showNonAvailableDialog(BuildContext context, String message, [bool shouldQuitApp = true]) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -41,7 +53,7 @@ class Requests {
               child: Text(shouldQuitApp ? 'Quitter' : 'Ok'),
             ),
           ],
-          content: Text(Strings.textNoFreeAdvisor),
+          content: Text(message),
         );
       },
     );

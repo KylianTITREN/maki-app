@@ -39,14 +39,12 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
       onSuccess: () {
         _startAutoUpdateRequest(
           onSuccess: () {
-            if (App.serviceOpened(context)) {
               _requestsPending = 0;
               _startTimer();
-              if (kReleaseMode || Const.DEMO) {
-                _startIsAdvisersAvailableRequest();
+              if (kReleaseMode || Const.TEST_MODE) {
+                _startAreServicesAvailableRequest();
               }
 //          _startSharedPreferencesInitialization();
-            }
           },
         );
       },
@@ -130,9 +128,9 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
     }, _delay);
   }
 
-  void _startIsAdvisersAvailableRequest() {
+  void _startAreServicesAvailableRequest() {
     _requestsPending++;
-    Requests.isAdvisersAvailable(
+    Requests.areServicesAvailable(
       context,
       onSuccess: () {
         _onRequestsFinished();

@@ -11,6 +11,7 @@ import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notifier/notifier.dart';
 
@@ -27,7 +28,7 @@ class _StepPage2State extends BaseState<StepPage2> {
   @override
   void onEnter() {
     super.onEnter();
-    if (Const.DEMO) {
+    if (!kReleaseMode && Const.DEMO) {
       delay(() {
         FirebaseUtils.setFolderState(Registry.uid, 'IN_PROGRESS', callback: (uid) {
           widget.parentState.goToPage(2);
@@ -41,7 +42,7 @@ class _StepPage2State extends BaseState<StepPage2> {
   @override
   void onLeave() {
     super.onLeave();
-    if (!Const.DEMO) {
+    if (kReleaseMode || !Const.DEMO) {
       widget.parentState.cancelSubscription();
     }
   }
