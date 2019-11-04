@@ -1,4 +1,4 @@
-package com.servicesnomades.c_valide
+package com.servicesnomades.cvalide
 
 import android.os.Bundle
 import io.flutter.app.FlutterActivity

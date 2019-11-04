@@ -1,2 +1,5 @@
 Alias: validation_dossier
-Mdp: vdossier2019
+Mdp: validation2019
+
+Alias: c-ouvert
+Mdp: nomades2010
