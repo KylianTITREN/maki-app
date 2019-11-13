@@ -145,14 +145,38 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                               response.hasData ? response.data : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
 
                           return comment.isNotEmpty
-                              ? FlatButton(
-                                  onPressed: () {
-                                    _onAdvisorCommentBtnPressed(comment);
-                                  },
-                                  child: Text(
-                                    Strings.textSeeAdvisorComment,
-                                    style: Styles.littleTextPrimary(context),
-                                  ),
+                              ? Column(
+                                  children: [
+                                    SizedBox(height: 20),
+                                    Text(
+                                      Strings.textAdvisorComment,
+                                      style: Styles.subtitle(context),
+                                    ),
+                                    SizedBox(height: 20),
+                                    comment.length < 200
+                                        ? Text(
+                                            comment,
+                                            style: TextStyle(color: Colors.white),
+                                          )
+                                        : Column(
+                                            children: [
+                                              Text(
+                                                comment.substring(0, 200) + "...",
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  _onAdvisorCommentBtnPressed(comment);
+                                                },
+                                                child: Text(
+                                                  Strings.textSeeMore,
+                                                  style: Styles.littleTextPrimary(context),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                    SizedBox(height: 20),
+                                  ],
                                 )
                               : Container();
                         }),
@@ -184,7 +208,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Commentaire du conseiller',
+                  Strings.textAdvisorComment,
                   textAlign: TextAlign.center,
                   style: Styles.appBarTitle(context),
                 ),

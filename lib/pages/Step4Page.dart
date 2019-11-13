@@ -133,21 +133,39 @@ class _StepPage4State extends BaseState<StepPage4> {
                                 return comment.isNotEmpty
                                     ? Column(
                                         children: <Widget>[
-                                          SizedBox(height: 30),
+                                          SizedBox(height: 20),
                                           Text(
                                             Strings.textThanksToResignTheFolder,
-                                            style: Styles.text(context),
-                                            textAlign: TextAlign.center,
+                                            style: Styles.subtext(context),
                                           ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              _onAdvisorCommentBtnPressed(comment);
-                                            },
-                                            child: Text(
-                                              Strings.textSeeAdvisorComment,
-                                              style: Styles.littleTextPrimary(context),
-                                            ),
+                                          SizedBox(height: 20),
+                                          Text(
+                                            Strings.textAdvisorComment,
+                                            style: Styles.subtitle(context),
                                           ),
+                                          SizedBox(height: 20),
+                                          comment.length < 200
+                                              ? Text(
+                                                  comment,
+                                                  style: TextStyle(color: Colors.white),
+                                                )
+                                              : Column(
+                                                  children: [
+                                                    Text(
+                                                      comment.substring(0, 200) + "...",
+                                                      style: TextStyle(color: Colors.white),
+                                                    ),
+                                                    FlatButton(
+                                                      onPressed: () {
+                                                        _onAdvisorCommentBtnPressed(comment);
+                                                      },
+                                                      child: Text(
+                                                        Strings.textSeeMore,
+                                                        style: Styles.littleTextPrimary(context),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
                                         ],
                                       )
                                     : Container();
@@ -213,15 +231,33 @@ class _StepPage4State extends BaseState<StepPage4> {
                           ? Column(
                               children: <Widget>[
                                 SizedBox(height: 20),
-                                FlatButton(
-                                  onPressed: () {
-                                    _onAdvisorCommentBtnPressed(comment);
-                                  },
-                                  child: Text(
-                                    Strings.textSeeAdvisorComment,
-                                    style: Styles.littleTextPrimary(context),
-                                  ),
+                                Text(
+                                  Strings.textAdvisorComment,
+                                  style: Styles.subtitle(context),
                                 ),
+                                SizedBox(height: 20),
+                                comment.length < 200
+                                    ? Text(
+                                        comment,
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    : Column(
+                                        children: [
+                                          Text(
+                                            comment.substring(0, 200) + "...",
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                          FlatButton(
+                                            onPressed: () {
+                                              _onAdvisorCommentBtnPressed(comment);
+                                            },
+                                            child: Text(
+                                              Strings.textSeeMore,
+                                              style: Styles.littleTextPrimary(context),
+                                            ),
+                                          )
+                                        ],
+                                      )
                               ],
                             )
                           : Container();
@@ -260,7 +296,7 @@ class _StepPage4State extends BaseState<StepPage4> {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Commentaire du conseiller',
+                  Strings.textAdvisorComment,
                   textAlign: TextAlign.center,
                   style: Styles.appBarTitle(context),
                 ),

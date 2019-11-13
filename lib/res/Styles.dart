@@ -60,6 +60,14 @@ class Styles {
     );
   }
 
+  static TextStyle subtext(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: Misc.isTablet(context) ? 16.0 : 12.0,
+      fontWeight: FontWeight.w300,
+    );
+  }
+
   static TextStyle textThin(BuildContext context) {
     return TextStyle(
       color: Colors.white,
