@@ -31,6 +31,9 @@ class Requests {
       }
     }).catchError((object) {
       print('Error: $object');
+      if (onFailed != null) {
+        onFailed();
+      }
       _showNonAvailableDialog(context, Strings.textErrorOccurred, quitApp);
     });
   }

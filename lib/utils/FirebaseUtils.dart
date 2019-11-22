@@ -12,7 +12,7 @@ typedef void StateChangedCallback(String state);
 class FirebaseUtils {
   static String parentFolder = FlavorConfig.isProduction() ? 'prod' : 'test';
 
-  static void createFolder(String folderNumber, {CreateCallback callback}) {
+  static void createFolder(String folderNumber, {CreateCallback callback, VoidCallback errorCallback}) {
     if (folderNumber != null) {
       DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('mobile_folders').push();
 
@@ -26,6 +26,7 @@ class FirebaseUtils {
           callback(reference.key);
         }
       }).catchError((error) {
+        errorCallback();
         toast(Strings.textErrorOccurred);
       });
     }

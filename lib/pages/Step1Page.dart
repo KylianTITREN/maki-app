@@ -173,12 +173,12 @@ class _StepPage1State extends BaseState<StepPage1> {
   }
 
   void _onValidate() {
-      DialogUtils.showLoading(context, text: "Chargement");
-      if (kReleaseMode || Const.TEST_MODE) {
-        _startAreServicesAvailableRequest();
-      } else {
-        _startCreateFolderRequest();
-      }
+    DialogUtils.showLoading(context, text: "Chargement");
+    if (kReleaseMode || Const.TEST_MODE) {
+      _startAreServicesAvailableRequest();
+    } else {
+      _startCreateFolderRequest();
+    }
   }
 
   void _startAreServicesAvailableRequest() {
@@ -195,11 +195,17 @@ class _StepPage1State extends BaseState<StepPage1> {
   }
 
   void _startCreateFolderRequest() {
-    FirebaseUtils.createFolder(Registry.folderNumber, callback: (String uid) {
-      DialogUtils.dismiss(context);
-      Registry.uid = uid;
-      Registry.actualVideoDuration = Duration.zero;
-      widget.parentState.goToPage(1);
-    });
+    FirebaseUtils.createFolder(
+      Registry.folderNumber,
+      callback: (String uid) {
+        DialogUtils.dismiss(context);
+        Registry.uid = uid;
+        Registry.actualVideoDuration = Duration.zero;
+        widget.parentState.goToPage(1);
+      },
+      errorCallback: () {
+        DialogUtils.dismiss(context);
+      },
+    );
   }
 }
