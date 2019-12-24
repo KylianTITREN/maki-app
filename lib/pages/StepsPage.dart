@@ -29,6 +29,7 @@ class StepsPage extends BaseStatefulWidget {
 class StepsPageState extends BaseState<StepsPage> {
   int _requestsPending = 0;
   int _currentStep = 0;
+  bool showMsg = false;
   String _currentState = '';
   List<Widget> _pageViews;
   PageController _pageController;
@@ -81,7 +82,15 @@ class StepsPageState extends BaseState<StepsPage> {
   void initSubscription() {
     _subscription = FirebaseUtils.listenState(
       Registry.uid,
-      ['CREATED', 'IN_PROGRESS', 'ANOMALIES', 'ANOMALIES_UPDATED', 'REFUSED', 'VALIDATED', 'CANCELED'],
+      [
+        'CREATED',
+        'IN_PROGRESS',
+        'ANOMALIES',
+        'ANOMALIES_UPDATED',
+        'REFUSED',
+        'VALIDATED',
+        'CANCELED'
+      ],
       callback: (state) {
         _currentState = state;
         switch (state) {
@@ -155,7 +164,8 @@ class StepsPageState extends BaseState<StepsPage> {
     RestClient.service.getAnomalies(Registry.uid).then((Anomalies anomalies) {
       Registry.comment = anomalies.comment;
       Notifier.of(context).notify(Strings.notifyComment, Registry.comment);
-      Notifier.of(context).notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
+      Notifier.of(context)
+          .notify(Strings.notifyAnomalies, anomalies.anomalieTypes);
       _onRequestFinished();
     }).catchError((Object object) {
       print(object);
@@ -164,7 +174,9 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void _onRequestFinished() {
     if (--_requestsPending == 0) {
-      Registry.folderValidated == 0 || Registry.folderValidated == 1 ? cancelSubscription() : goToPage(2);
+      Registry.folderValidated == 0 || Registry.folderValidated == 1
+          ? cancelSubscription()
+          : goToPage(2);
     }
   }
 
@@ -186,7 +198,8 @@ class StepsPageState extends BaseState<StepsPage> {
                 FlatButton(
                   onPressed: () {
                     quitDialog(context);
-                    FirebaseUtils.deleteFolder(Registry.uid, callback: restartStepsPage);
+                    FirebaseUtils.deleteFolder(Registry.uid,
+                        callback: restartStepsPage);
                   },
                   child: Text(Strings.textYes),
                 ),
@@ -226,7 +239,8 @@ class StepsPageState extends BaseState<StepsPage> {
                           duration: 60000 * 5, // 5 minutes
                           onLoadingFinished: () {
                             if (_currentStep == 1) {
-                              FirebaseUtils.deleteFolder(Registry.uid, callback: () {
+                              FirebaseUtils.deleteFolder(Registry.uid,
+                                  callback: () {
                                 Registry.reset();
                               });
 
@@ -283,6 +297,7 @@ class StepsPageState extends BaseState<StepsPage> {
             ),
           ),
         ),
+        fab: showMsg == true ? MyFloatingButton() : Container(),
       ),
     );
   }
@@ -321,7 +336,11 @@ class StepsPageState extends BaseState<StepsPage> {
       curve: Curves.easeIn,
     );
 
-    setState(() {});
+    setState(() {
+      if(_currentStep <= 1 && _currentStep !=0){
+        showMsg = true;
+      }
+    });
   }
 
   void onStepsOver([VoidCallback callback]) {

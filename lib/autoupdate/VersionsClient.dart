@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:c_valide/autoupdate/AutoUpdate.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
@@ -14,7 +12,7 @@ abstract class VersionsClient {
   static VersionsClient _initialize() {
     final dio = Dio();
     dio.options.baseUrl = "https://sn-prod4.com/versioning/api/";
-    dio.options.contentType = ContentType.parse("application/json");
+    dio.options.contentType = "application/json";
     dio.options.connectTimeout = 60000;
     dio.options.receiveTimeout = 60000;
     final client = VersionsClient.instance(dio);

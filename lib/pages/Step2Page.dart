@@ -30,7 +30,8 @@ class _StepPage2State extends BaseState<StepPage2> {
     super.onEnter();
     if (!kReleaseMode && Const.DEMO) {
       delay(() {
-        FirebaseUtils.setFolderState(Registry.uid, 'IN_PROGRESS', callback: (uid) {
+        FirebaseUtils.setFolderState(Registry.uid, 'IN_PROGRESS',
+            callback: (uid) {
           widget.parentState.goToPage(2);
         });
       }, 6000);
@@ -68,7 +69,8 @@ class _StepPage2State extends BaseState<StepPage2> {
                 tag: HeroTags.explanation,
                 child: Material(
                   color: Colors.transparent,
-                  child: Notifier.of(context).register<bool>(Strings.notifyNoAdvisor, (_) {
+                  child: Notifier.of(context)
+                      .register<bool>(Strings.notifyNoAdvisor, (_) {
                     return Text(
                       _.hasData && _.data
                           ? '${Strings.textNoFreeAdvisor}. ${Strings.textServiceAvailableBetween}.'

@@ -61,7 +61,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> with Widgets
       case AppLifecycleState.inactive:
         onInactive();
         break;
-      case AppLifecycleState.suspending:
+      case AppLifecycleState.detached:
         onSuspend();
         break;
       case AppLifecycleState.paused:

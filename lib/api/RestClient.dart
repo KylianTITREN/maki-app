@@ -19,7 +19,7 @@ abstract class RestClient {
     final dio = Dio();
     dio.options.baseUrl = FlavorConfig.instance.values.apiBaseUrl;
     if (contentType != null) {
-      dio.options.contentType = ContentType.parse(contentType);
+      dio.options.contentType = contentType;
     }
     dio.options.connectTimeout = timeout;
     dio.options.receiveTimeout = timeout;
@@ -29,21 +29,17 @@ abstract class RestClient {
   }
 
   @GET("mobile-folders/{uid}")
-  @Headers({
-    "Accept": "application/json",
-    "Host": "c-visite.fr",
-  })
+  @Header("Accept: application/json")
+  @Header("Host: c-visite.fr")
   Future<Anomalies> getAnomalies(
     @Path('uid') String uid,
   );
 
   @FormUrlEncoded()
   @POST("mobile-folders/{uid}/anomalie-types/{anomalieTypeId}/upload-document")
-  @Headers({
-    "Accept": "application/json",
-    "Host": "c-visite.fr",
-    "Content-Type": "multipart/form-data",
-  })
+  @Header("Accept : application/json")
+  @Header("Host : c-visite.fr")
+  @Header("Content-Type : multipart/form-data")
   Future<void> sendDocument(
     @Query('token') String token,
     @Path('uid') String uid,
@@ -52,11 +48,9 @@ abstract class RestClient {
   );
 
   @POST("mobile-folders/{uid}/satisfaction")
-  @Headers({
-    "Accept": "application/json",
-    "Host": "c-visite.fr",
-    "Content-Type": "application/json",
-  })
+  @Header("Accept : application/json")
+  @Header("Host : c-visite.fr")
+  @Header("Content-Type : application/json")
   Future<void> sendSatisfactionResult(
     @Query('token') String token,
     @Path('uid') String uid,

@@ -22,7 +22,7 @@ dependencies:
   path:
   lipsum:
   sprintf:
-  retrofit:
+  retrofit: ^1.0.1+1
   json_annotation:
   firebase_core:
   firebase_database:
