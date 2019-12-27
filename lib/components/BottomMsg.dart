@@ -92,11 +92,8 @@ class MessagesBox extends StatelessWidget {
             child: TextField(
               controller: _msgFieldController,
               decoration: InputDecoration(
-                  labelText: 'Entrez votre message...',
+                  hintText: 'Entrez votre message...',
                   border: InputBorder.none,
-                  labelStyle: TextStyle(
-                    fontSize: 14,
-                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
                       Icons.send,

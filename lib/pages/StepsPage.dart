@@ -307,7 +307,7 @@ class StepsPageState extends BaseState<StepsPage> {
             ),
           ),
         ),
-        fab: showMsg == true ? MyFloatingButton() : Container(),
+        fab: MyFloatingButton(),
       ),
     );
   }
@@ -345,12 +345,6 @@ class StepsPageState extends BaseState<StepsPage> {
       duration: Duration(milliseconds: 200),
       curve: Curves.easeIn,
     );
-
-    setState(() {
-      if (_currentStep <= 1 && _currentStep != 0) {
-        showMsg = true;
-      }
-    });
   }
 
   void onStepsOver([VoidCallback callback]) {
