@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
 import 'package:c_valide/basics/BaseStatefulWidget.dart';

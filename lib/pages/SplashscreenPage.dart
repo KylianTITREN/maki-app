@@ -39,11 +39,12 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
       onSuccess: () {
         _startAutoUpdateRequest(
           onSuccess: () {
-              _requestsPending = 0;
-              _startTimer();
-              if (kReleaseMode || Const.TEST_MODE) {
-                _startAreServicesAvailableRequest();
-              }
+            _requestsPending = 0;
+            _startTimer();
+            _startDataRequest();
+            if (kReleaseMode || Const.TEST_MODE) {
+              _startAreServicesAvailableRequest();
+            }
 //          _startSharedPreferencesInitialization();
           },
         );
@@ -100,7 +101,9 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
 
   _startAutoUpdateRequest({VoidCallback onSuccess}) {
     VersionsClient.service
-        .autoUpdate(Platform.isIOS ? FlavorConfig.instance.values.autoUpdateIdiOS : FlavorConfig.instance.values.autoUpdateIdAndroid)
+        .autoUpdate(Platform.isIOS
+            ? FlavorConfig.instance.values.autoUpdateIdiOS
+            : FlavorConfig.instance.values.autoUpdateIdAndroid)
         .then((response) {
       _onAutoUpdate(response, onSuccess);
     }).catchError((object) {
@@ -138,6 +141,16 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
     );
   }
 
+  _startDataRequest() {
+    Requests.startAllDataRequest(
+      context,
+      onRequestFinished: _onRequestsFinished,
+      onRequestError: () {
+        --_requestsPending;
+      },
+    );
+  }
+
 //  void _startSharedPreferencesInitialization() {
 //    _requestsPending++;
 //    initializeSharedPreferences(() {
@@ -160,7 +173,8 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
     int appBuildNumber = int.parse(App.packageInfo.buildNumber);
 
     int lastForcedBuildnumber = response.lastForcedBuildNumber;
-    int appPrefsBuildNumber = prefs.getInt(Strings.prefNeverThisBuildNumberAgain) ?? 0;
+    int appPrefsBuildNumber =
+        prefs.getInt(Strings.prefNeverThisBuildNumberAgain) ?? 0;
 
     if (servBuildNumber <= appBuildNumber) {
       onSuccess();
@@ -181,7 +195,8 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
 
           actions['Jamais'] = () {
             quitDialog(context);
-            prefs.setInt(Strings.prefNeverThisBuildNumberAgain, servBuildNumber);
+            prefs.setInt(
+                Strings.prefNeverThisBuildNumberAgain, servBuildNumber);
             onSuccess();
           };
         }
@@ -209,7 +224,9 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
   }
 
   _updateApp(String buildLocation) {
-    Platform.isIOS ? _downloadForIOS(buildLocation) : _downloadForAndroid(buildLocation);
+    Platform.isIOS
+        ? _downloadForIOS(buildLocation)
+        : _downloadForAndroid(buildLocation);
   }
 
   void _downloadForIOS(String url) async {

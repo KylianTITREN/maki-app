@@ -66,7 +66,8 @@ class _StepPage1State extends BaseState<StepPage1> {
                   Container(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: mq.size.width * 0.6),
+                      constraints:
+                          BoxConstraints(maxWidth: mq.size.width * 0.6),
                       child: Text(
                         Strings.textBelowLogoDescription,
                         style: Styles.description(context),
@@ -123,13 +124,15 @@ class _StepPage1State extends BaseState<StepPage1> {
 
                                   if (Registry.folderNumber.length == 0) {
                                     return Strings.warnFillThisField;
-                                  } else if (Registry.folderNumber.length < Const.MAX_FOLDER_NUMBER_LENGTH) {
+                                  } else if (Registry.folderNumber.length <
+                                      Const.MAX_FOLDER_NUMBER_LENGTH) {
                                     return Strings.warnFolderNumberInvalid;
                                   }
 
                                   return null;
                                 },
-                                decoration: Styles.editText(context, hint: Strings.hintFolderNumber),
+                                decoration: Styles.editText(context,
+                                    hint: Strings.hintFolderNumber),
                               ),
                             ),
                           ),

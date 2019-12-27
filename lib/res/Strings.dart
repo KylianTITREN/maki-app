@@ -1,11 +1,19 @@
 class Strings {
   static String appName = 'Validation dossier';
 
+  static String textNA = '-';
+  static String textSelect = 'Sélectionner';
+  static String textAllShops = 'Total magasin';
+  static String textAllRegions = 'Toutes les régions';
+  static String textAllAgences = 'Toutes les agences';
+  static String textAllSectors = 'Tous les secteurs';
+
   static String textQuit = 'Quitter';
   static String textYes = 'Oui';
   static String textNo = 'Non';
   static String textOk = 'OK';
   static String textErrorOccurred = 'Une erreur est survenue';
+  static String textErrorOccurredTryAgain = '$textErrorOccurred. Veuillez réessayer';
   static String textClose = 'Fermer';
   static String textBack = 'Retour';
   static String textValidate = 'Valider';

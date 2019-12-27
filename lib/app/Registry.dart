@@ -1,5 +1,10 @@
+import 'package:c_valide/models/AllData.dart';
+import 'package:c_valide/models/Magasin.dart';
+
 class Registry {
+  static AllData allData;
   static String uid = '';
+  static Magasin magasin;
   static String comment = '';
   static String advisorText = '';
   static String folderNumber = '';

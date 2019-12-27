@@ -10,6 +10,7 @@ void main() {
       appName: 'Validation dossier',
       flavorName: 'fnacProduction',
       apiBaseUrl: 'https://c-visite.fr/c-anomalie-add-on/public/index.php/',
+      fnacApiBaseUrl : 'https://sn-prod4.com/c-ouvert/public/api/',
       enseigneId: 9,
       autoUpdateIdiOS: 'validation_dossier_ios',
       autoUpdateIdAndroid: 'validation_dossier_android',
