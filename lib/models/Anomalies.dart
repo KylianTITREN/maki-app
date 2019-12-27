@@ -13,6 +13,8 @@ class Anomalies {
   String state;
   @JsonKey(name: 'id_advisor')
   String idAdvisor;
+  @JsonKey(name: 'adviser_text')
+  String advisorText;
   @JsonKey(name: 'id_enseigne')
   String idEnseigne;
   @JsonKey(name: 'comment')
@@ -31,6 +33,7 @@ class Anomalies {
     this.folderNumber,
     this.state,
     this.idAdvisor,
+    this.advisorText,
     this.idEnseigne,
     this.comment,
     this.startStudyAt,

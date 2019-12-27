@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AnomalieRow extends StatelessWidget {
-  AnomalieRow(this.anomalie);
+  AnomalieRow(this.anomalie, this.clickable);
 
   final Anomalie anomalie;
+  final bool clickable;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,9 @@ class AnomalieRow extends StatelessWidget {
       margin: const EdgeInsets.all(4.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: anomalie.isResolved || !anomalie.pictureNeeded ? Colours.primaryColor : Colours.darkGrey,
+        color: anomalie.isResolved || !anomalie.pictureNeeded
+            ? Colours.primaryColor
+            : Colours.darkGrey,
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Row(
@@ -29,10 +32,16 @@ class AnomalieRow extends StatelessWidget {
               style: Styles.textThin(context),
             ),
           ),
-          Icon(
-            anomalie.isResolved || !anomalie.pictureNeeded ? Icons.check : Icons.keyboard_arrow_right,
-            color: Registry.folderValidated == 1 ? Colors.transparent : Colors.white,
-          ),
+          clickable == true
+              ? Icon(
+                  anomalie.isResolved || !anomalie.pictureNeeded
+                      ? Icons.check
+                      : Icons.keyboard_arrow_right,
+                  color: Registry.folderValidated == 1
+                      ? Colors.transparent
+                      : Colors.white,
+                )
+              : Container(),
         ],
       ),
     );

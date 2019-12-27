@@ -56,7 +56,26 @@ class FirebaseUtils {
           .child('comment')
           .once()
           .then((DataSnapshot snapshot) {
-        print(snapshot.value);
+        if (callback != null) {
+          callback(snapshot.value);
+        }
+      }).catchError((error) {
+        print('Error: $error');
+        toast(Strings.textErrorOccurred);
+      });
+    }
+  }
+
+  static void getAdvisorText(String uid, {Function callback(String value)}) {
+    if (uid != null) {
+      FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('mobile_folders')
+          .child(uid)
+          .child('adviser_text')
+          .once()
+          .then((DataSnapshot snapshot) {
         if (callback != null) {
           callback(snapshot.value);
         }

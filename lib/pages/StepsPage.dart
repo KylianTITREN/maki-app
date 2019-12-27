@@ -152,11 +152,21 @@ class StepsPageState extends BaseState<StepsPage> {
       Registry.uid,
       callback: (comment) {
         Registry.comment = comment;
+        if (comment.isNotEmpty) {
+          _startFolderAdvisorTextRequest();
+        }
         Notifier.of(context).notify(Strings.notifyComment, Registry.comment);
         _onRequestFinished();
         return;
       },
     );
+  }
+
+  void _startFolderAdvisorTextRequest() {
+    FirebaseUtils.getAdvisorText(Registry.uid, callback: (advisorText) {
+      Registry.advisorText = advisorText;
+      return;
+    });
   }
 
   void _startAnomaliesRequest() {
@@ -337,7 +347,7 @@ class StepsPageState extends BaseState<StepsPage> {
     );
 
     setState(() {
-      if(_currentStep <= 1 && _currentStep !=0){
+      if (_currentStep <= 1 && _currentStep != 0) {
         showMsg = true;
       }
     });

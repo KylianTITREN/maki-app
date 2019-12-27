@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
 import 'package:c_valide/basics/BaseStatefulWidget.dart';
@@ -30,7 +32,7 @@ class StepPage4 extends BaseStatefulWidget {
 
 class _StepPage4State extends BaseState<StepPage4> {
   List<Anomalie> _anomalies = [];
-
+  
   @override
   void onEnter() {
     super.onEnter();
@@ -53,7 +55,9 @@ class _StepPage4State extends BaseState<StepPage4> {
           ? Notifier.of(context).register<List<Anomalie>>(
               Strings.notifyAnomalies,
               (anomalies) {
-                if (widget.parentState.currentState == 'CANCELED' && _anomalies != null && _anomalies.length <= 0) {
+                if (widget.parentState.currentState == 'CANCELED' &&
+                    _anomalies != null &&
+                    _anomalies.length <= 0) {
                   _anomalies = anomalies.hasData ? anomalies.data : [];
                 }
 
@@ -92,12 +96,17 @@ class _StepPage4State extends BaseState<StepPage4> {
                                   Text(
                                     _anomalies.length == 1
                                         ? sprintf(
-                                            Strings.textCanceledAnomalieFolderNumber,
+                                            Strings
+                                                .textCanceledAnomalieFolderNumber,
                                             [Registry.folderNumber],
                                           )
                                         : sprintf(
-                                            Strings.textCanceledAnomaliesFolderNumber,
-                                            [Registry.folderNumber, _anomalies.length],
+                                            Strings
+                                                .textCanceledAnomaliesFolderNumber,
+                                            [
+                                              Registry.folderNumber,
+                                              _anomalies.length
+                                            ],
                                           ),
                                     style: Styles.text(context),
                                     textAlign: TextAlign.center,
@@ -108,27 +117,15 @@ class _StepPage4State extends BaseState<StepPage4> {
                                   CSeparator(Colours.primaryColor),
                                 ],
                               ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 8.0),
-                                child: ListView.builder(
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  itemCount: _anomalies.length,
-                                  itemBuilder: (context, index) {
-                                    Anomalie anomalie = _anomalies[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        showModal(anomalie);
-                                      },
-                                      child: AnomalieRow(anomalie),
-                                    );
-                                  },
-                                ),
-                              ),
-                              Notifier.of(context).register<String>(Strings.notifyComment, (response) {
+                              listOfAnomalies(_anomalies, true),
+                              Notifier.of(context).register<String>(
+                                  Strings.notifyComment, (response) {
                                 print(response);
-                                String comment =
-                                    response.hasData ? response.data : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
+                                String comment = response.hasData
+                                    ? response.data
+                                    : (Registry.comment?.isNotEmpty ?? false
+                                        ? Registry.comment
+                                        : '');
 
                                 return comment.isNotEmpty
                                     ? Column(
@@ -144,28 +141,31 @@ class _StepPage4State extends BaseState<StepPage4> {
                                             style: Styles.subtitle(context),
                                           ),
                                           SizedBox(height: 20),
-                                          comment.length < 200
-                                              ? Text(
-                                                  comment,
-                                                  style: TextStyle(color: Colors.white),
-                                                )
-                                              : Column(
-                                                  children: [
-                                                    Text(
-                                                      comment.substring(0, 200) + "...",
-                                                      style: TextStyle(color: Colors.white),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        _onAdvisorCommentBtnPressed(comment);
-                                                      },
-                                                      child: Text(
-                                                        Strings.textSeeMore,
-                                                        style: Styles.littleTextPrimary(context),
-                                                      ),
-                                                    )
-                                                  ],
+                                          Column(
+                                            children: [
+                                              Text(
+                                                comment.length > 200
+                                                    ? comment.substring(
+                                                            0, 200) +
+                                                        "..."
+                                                    : comment,
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  _onAdvisorCommentBtnPressed(
+                                                      comment, _anomalies);
+                                                },
+                                                child: Text(
+                                                  Strings.textSeeMore,
+                                                  style:
+                                                      Styles.littleTextPrimary(
+                                                          context),
                                                 ),
+                                              )
+                                            ],
+                                          ),
                                         ],
                                       )
                                     : Container();
@@ -195,7 +195,9 @@ class _StepPage4State extends BaseState<StepPage4> {
                         color: Colors.transparent,
                         child: Text(
                           sprintf(
-                            Registry.folderValidated == 2 ? Strings.textFolderValidated : Strings.textFolderDeclined,
+                            Registry.folderValidated == 2
+                                ? Strings.textFolderValidated
+                                : Strings.textFolderDeclined,
                             [Registry.folderNumber],
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -223,9 +225,14 @@ class _StepPage4State extends BaseState<StepPage4> {
                         ),
                       ),
                     ),
-                    Notifier.of(context).register<String>(Strings.notifyComment, (response) {
+                    Notifier.of(context).register<String>(Strings.notifyComment,
+                        (response) {
                       print(_anomalies);
-                      String comment = response.hasData ? response.data : (Registry.comment?.isNotEmpty ?? false ? Registry.comment : '');
+                      String comment = response.hasData
+                          ? response.data
+                          : (Registry.comment?.isNotEmpty ?? false
+                              ? Registry.comment
+                              : '');
 
                       return comment.isNotEmpty
                           ? Column(
@@ -236,28 +243,27 @@ class _StepPage4State extends BaseState<StepPage4> {
                                   style: Styles.subtitle(context),
                                 ),
                                 SizedBox(height: 20),
-                                comment.length < 200
-                                    ? Text(
-                                        comment,
-                                        style: TextStyle(color: Colors.white),
-                                      )
-                                    : Column(
-                                        children: [
-                                          Text(
-                                            comment.substring(0, 200) + "...",
-                                            style: TextStyle(color: Colors.white),
-                                          ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              _onAdvisorCommentBtnPressed(comment);
-                                            },
-                                            child: Text(
-                                              Strings.textSeeMore,
-                                              style: Styles.littleTextPrimary(context),
-                                            ),
-                                          )
-                                        ],
-                                      )
+                                Column(
+                                  children: [
+                                    Text(
+                                      comment.length > 200
+                                          ? comment.substring(0, 200) + "..."
+                                          : comment,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    FlatButton(
+                                      onPressed: () {
+                                        _onAdvisorCommentBtnPressed(
+                                            comment, _anomalies);
+                                      },
+                                      child: Text(
+                                        Strings.textSeeMore,
+                                        style:
+                                            Styles.littleTextPrimary(context),
+                                      ),
+                                    )
+                                  ],
+                                )
                               ],
                             )
                           : Container();
@@ -287,7 +293,7 @@ class _StepPage4State extends BaseState<StepPage4> {
     });
   }
 
-  void _onAdvisorCommentBtnPressed(String comment) {
+  void _onAdvisorCommentBtnPressed(String comment, List<Anomalie> anomalies) {
     showDialog(
       context: context,
       builder: (context) {
@@ -295,13 +301,28 @@ class _StepPage4State extends BaseState<StepPage4> {
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                anomalies.length > 0 ? Text(
+                  'Anomalie(s)',
+                  textAlign: TextAlign.left,
+                  style: Styles.appBarTitle(context),
+                ) : Container(),
+                SizedBox(height: 15.0),
+                listOfAnomalies(anomalies, false),
+                SizedBox(height: 15.0),
                 Text(
                   Strings.textAdvisorComment,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                   style: Styles.appBarTitle(context),
                 ),
-                SizedBox(height: 8.0),
-                Text(comment),
+                SizedBox(height: 15.0),
+                Text(
+                  comment,
+                  style: TextStyle(fontSize: 14, color: Colours.grey),
+                ),
+                SizedBox(height: 40.0),
+                Text(
+                  Registry.advisorText,
+                ),
               ],
             ),
           ),
@@ -334,5 +355,27 @@ class _StepPage4State extends BaseState<StepPage4> {
     if (selectedId == null) {
       setState(() {});
     }
+  }
+
+  Widget listOfAnomalies(List<Anomalie> anomalies, bool click) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: (65 * anomalies.length).toDouble(),
+      margin: const EdgeInsets.only(top: 8.0),
+      child: ListView.builder(
+        primary: false,
+        shrinkWrap: true,
+        itemCount: anomalies.length,
+        itemBuilder: (context, index) {
+          Anomalie anomalie = anomalies[index];
+          return GestureDetector(
+            onTap: () {
+              click == true ? showModal(anomalie) : print('not possible');
+            },
+            child: AnomalieRow(anomalie, click),
+          );
+        },
+      ),
+    );
   }
 }
