@@ -45,7 +45,8 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
     super.onEnter();
     widget.parentState.initSubscription();
     Timer.periodic(Duration(seconds: 2), (timer) {
-      if(widget.parentState.currentState == 'ANOMALIES' && requestDialog == 0){
+      if (widget.parentState.currentState == 'ANOMALIES' &&
+          requestDialog == 0) {
         requestDialog = 1;
         _onAdvisorCommentBtnPressed(Registry.comment, _anomalies);
         timer.cancel();
@@ -220,28 +221,42 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                anomalies.length > 0 ? Text(
-                  'Anomalie(s)',
-                  textAlign: TextAlign.left,
-                  style: Styles.appBarTitle(context),
-                ) : Container(),
-                SizedBox(height: 15.0),
-                listOfAnomalies(anomalies, false),
-                SizedBox(height: 15.0),
-                Text(
-                  Strings.textAdvisorComment,
-                  textAlign: TextAlign.left,
-                  style: Styles.appBarTitle(context),
-                ),
-                SizedBox(height: 15.0),
-                Text(
-                  comment,
-                  style: TextStyle(fontSize: 14, color: Colours.grey),
-                ),
-                SizedBox(height: 40.0),
-                Text(
-                  Registry.advisorText,
-                ),
+                anomalies.length > 0
+                    ? Column(
+                        children: <Widget>[
+                          Text(
+                            'Anomalie(s)',
+                            textAlign: TextAlign.left,
+                            style: Styles.appBarTitle(context),
+                          ),
+                          SizedBox(height: 15.0),
+                          listOfAnomalies(anomalies, false),
+                          SizedBox(height: 15.0),
+                        ],
+                      )
+                    : Container(),
+                comment.isNotEmpty
+                    ? Column(
+                        children: <Widget>[
+                          Text(
+                            Strings.textAdvisorComment,
+                            textAlign: TextAlign.left,
+                            style: Styles.appBarTitle(context),
+                          ),
+                          SizedBox(height: 15.0),
+                          Text(
+                            comment,
+                            style: TextStyle(fontSize: 14, color: Colours.grey),
+                          ),
+                          SizedBox(height: 40.0)
+                        ],
+                      )
+                    : Container(),
+                Registry.advisorText.isNotEmpty
+                    ? Text(
+                        Registry.advisorText,
+                      )
+                    : Container(),
               ],
             ),
           ),

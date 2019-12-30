@@ -33,6 +33,71 @@ class FirebaseUtils {
     }
   }
 
+  static void createChat(String folderNumber, int shopId, {CreateCallback callback, VoidCallback errorCallback}) {
+    if (folderNumber != null) {
+      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').push();
+
+      reference.set({
+        'mobile_folder_id': folderNumber,
+        'shop_id':shopId,
+        'created_at': DateTime.now().millisecondsSinceEpoch,
+      }).then((success) {
+        if (callback != null) {
+          callback(reference.key);
+        }
+      }).catchError((error) {
+        errorCallback();
+        toast(Strings.textErrorOccurred);
+      });
+    }
+  }
+
+  static void setChatFolderId(String uid, String folderNumber, {CreateCallback callback}) {
+    if (uid != null && uid.isNotEmpty && folderNumber != null) {
+      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').child(uid);
+
+      reference.update({'folderNumber': folderNumber}).then((success) {
+        if (callback != null) {
+          callback(reference.key);
+        }
+      }).catchError((error) {
+        toast(Strings.textErrorOccurred);
+      });
+    }
+  }
+
+  static void updateShopId(String uid, int shopId, {CreateCallback callback}) {
+    if (uid != null && uid.isNotEmpty && shopId != null) {
+      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').child(uid);
+
+      reference.update({'shop_id': shopId}).then((success) {
+        if (callback != null) {
+          callback(reference.key);
+        }
+      }).catchError((error) {
+        toast(Strings.textErrorOccurred);
+      });
+    }
+  }
+
+  static void setChatMessage(String uid, String text, {CreateCallback callback}) {
+    if (uid != null && uid.isNotEmpty && text != null) {
+      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').child(uid).child('messages').push();
+
+      reference.set({
+        'message': text,
+        'from':"APP",
+        'created_at': DateTime.now().millisecondsSinceEpoch,
+      }).then((success) {
+        if (callback != null) {
+          callback(reference.key);
+        }
+      }).catchError((error) {
+        toast(Strings.textErrorOccurred);
+      });
+    }
+  }
+
   static void setFolderState(String uid, String state, {CreateCallback callback}) {
     if (uid != null && uid.isNotEmpty && state != null) {
       DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('mobile_folders').child(uid);

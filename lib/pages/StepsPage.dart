@@ -227,7 +227,7 @@ class StepsPageState extends BaseState<StepsPage> {
           top: Align(
             alignment: Alignment.topCenter,
             child: Container(
-              margin: const EdgeInsets.only(top: 28.0, bottom: 0),
+              margin: const EdgeInsets.only(top: 40.0, bottom: 0),
               child: _currentStep > 0
                   ? CStepProgressBar(
                       <CStep>[

@@ -177,7 +177,7 @@ class _StepPage1State extends BaseState<StepPage1> {
   }
 
   void _onValidate() {
-    if (Registry.magasin != null) {
+    if (Registry.magasin == null) {
       InformationDialog(context, text: 'Veuillez choisir un magasin').show();
     } else {
       DialogUtils.showLoading(context, text: "Chargement");
@@ -185,6 +185,7 @@ class _StepPage1State extends BaseState<StepPage1> {
         _startAreServicesAvailableRequest();
       } else {
         _startCreateFolderRequest();
+        _setChatFolderId();
       }
     }
   }
@@ -195,6 +196,7 @@ class _StepPage1State extends BaseState<StepPage1> {
       quitApp: false,
       onSuccess: () {
         _startCreateFolderRequest();
+        _setChatFolderId();
       },
       onFailed: () {
         DialogUtils.dismiss(context);
@@ -205,12 +207,38 @@ class _StepPage1State extends BaseState<StepPage1> {
   void _startCreateFolderRequest() {
     FirebaseUtils.createFolder(
       Registry.folderNumber,
-      int.parse("2"),
+      int.parse(Registry.magasin.codeApporteur),
       callback: (String uid) {
         DialogUtils.dismiss(context);
         Registry.uid = uid;
         Registry.actualVideoDuration = Duration.zero;
         widget.parentState.goToPage(1);
+      },
+      errorCallback: () {
+        DialogUtils.dismiss(context);
+      },
+    );
+  }
+
+  void _setChatFolderId(){
+    if(Registry.chatUid != ''){
+      FirebaseUtils.setChatFolderId(
+      Registry.chatUid,
+      Registry.folderNumber,
+    );
+    }else{
+      _createChat();
+    }
+    
+  }
+
+  void _createChat(){
+    FirebaseUtils.createChat(
+      Registry.folderNumber == null ? '' : Registry.folderNumber,
+      int.parse(Registry.magasin.codeApporteur),
+      callback: (String uid) {
+        DialogUtils.dismiss(context);
+        Registry.chatUid = uid;
       },
       errorCallback: () {
         DialogUtils.dismiss(context);

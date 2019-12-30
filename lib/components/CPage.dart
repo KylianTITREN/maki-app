@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:c_valide/components/BottomMsg.dart';
 import 'package:c_valide/res/Colours.dart';
+import 'package:c_valide/utils/DialogUtils.dart';
+import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/models/Magasin.dart';
@@ -51,18 +53,38 @@ class CPageState extends State<CPage> {
     );
   }
 
+  void _createChat(){
+    FirebaseUtils.createChat(
+      Registry.folderNumber == null ? '' : Registry.folderNumber,
+      Registry.magasin == null ? 0 : int.parse(Registry.magasin.codeApporteur),
+      callback: (String uid) {
+        Registry.chatUid = uid;
+      },
+    );
+  }
+
+  void _updateChatShopId(){
+    FirebaseUtils.updateShopId(
+      Registry.chatUid,
+      int.parse(Registry.magasin.codeApporteur),
+    );
+  }
+
   void _chooseShop() {
     showPopup++;
-    showDialog(
-      context: context,
-      builder: (_) => ShopPopup(
-        onValueChanged: (filterMagasin) {
-          Registry.magasin = filterMagasin;
-          quitDialog(context);
-          updateData(filterMagasin);
-        },
-      ),
-    );
+    if (Registry.uid.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (_) => ShopPopup(
+          onValueChanged: (filterMagasin) {
+            Registry.magasin = filterMagasin;
+            quitDialog(context);
+            updateData(filterMagasin);
+            showPopup == 1 ? _createChat() : _updateChatShopId();
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -70,44 +92,40 @@ class CPageState extends State<CPage> {
     return Scaffold(
       body: Container(
         color: widget.backgroundColor ?? Colors.black87,
-        child: SafeArea(
+        child: Stack(children: <Widget>[
+          Positioned(
+            top: 30,
+            right: 30,
+            child: GestureDetector(
+              onTap: () {
+                _chooseShop();
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    Registry.magasin == null
+                        ? 'Aucun sélectionné'
+                        : Registry.magasin.name,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Image.asset(
+                    "assets/images/shape-shop.png",
+                    fit: BoxFit.contain,
+                    color: Colors.white,
+                    height: 24,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SafeArea(
             child: widget.child,
           ),
-          //TODOO
-          // Stack(children: <Widget>[
-          // Positioned(
-          //   top: 30,
-          //   right: 30,
-          //   child: GestureDetector(
-          //     onTap: () {
-          //       _chooseShop();
-          //     },
-          //     child: Row(
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       children: <Widget>[
-          //         Text(
-          //           Registry.magasin == null
-          //               ? 'Aucun sélectionné'
-          //               : Registry.magasin.name,
-          //           style: TextStyle(
-          //             color: Colors.white,
-          //           ),
-          //         ),
-          //         SizedBox(width: 12),
-          //         Image.asset(
-          //           "assets/images/shape-shop.png",
-          //           fit: BoxFit.contain,
-          //           color: Colors.white,
-          //           height: 24,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // SafeArea(
-          //   child: widget.child,
-          // ),
-        // ]),
+        ]),
       ),
       floatingActionButton: widget.fab,
     );

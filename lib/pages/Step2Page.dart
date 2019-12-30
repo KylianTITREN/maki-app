@@ -51,7 +51,7 @@ class _StepPage2State extends BaseState<StepPage2> {
   @override
   Widget onBuild() {
     return Container(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.only(left:32.0,right:32,bottom:32),
       child: Center(
         child: SingleChildScrollView(
           child: Column(

@@ -4,6 +4,7 @@ import 'package:c_valide/models/Magasin.dart';
 class Registry {
   static AllData allData;
   static String uid = '';
+  static String chatUid = '';
   static Magasin magasin;
   static String comment = '';
   static String advisorText = '';
