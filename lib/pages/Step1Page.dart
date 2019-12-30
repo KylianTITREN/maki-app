@@ -11,6 +11,7 @@ import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/DialogUtils.dart';
+import 'package:c_valide/utils/Dialogs.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:c_valide/utils/Page.dart';
 import 'package:flutter/foundation.dart';
@@ -176,11 +177,15 @@ class _StepPage1State extends BaseState<StepPage1> {
   }
 
   void _onValidate() {
-    DialogUtils.showLoading(context, text: "Chargement");
-    if (kReleaseMode || Const.TEST_MODE) {
-      _startAreServicesAvailableRequest();
+    if (Registry.magasin != null) {
+      InformationDialog(context, text: 'Veuillez choisir un magasin').show();
     } else {
-      _startCreateFolderRequest();
+      DialogUtils.showLoading(context, text: "Chargement");
+      if (kReleaseMode || Const.TEST_MODE) {
+        _startAreServicesAvailableRequest();
+      } else {
+        _startCreateFolderRequest();
+      }
     }
   }
 
@@ -200,6 +205,7 @@ class _StepPage1State extends BaseState<StepPage1> {
   void _startCreateFolderRequest() {
     FirebaseUtils.createFolder(
       Registry.folderNumber,
+      int.parse("2"),
       callback: (String uid) {
         DialogUtils.dismiss(context);
         Registry.uid = uid;

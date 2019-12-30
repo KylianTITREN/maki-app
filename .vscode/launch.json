@@ -8,13 +8,13 @@
             "name": "Production",
             "request": "launch",
             "type": "dart",
-            "program": "lib/flavors/fnac_production.dart"
+            "program": "lib/flavors/fnac_production.dart",
         },
         {
             "name": "Staging",
             "request": "launch",
             "type": "dart",
-            "program": "lib/flavors/fnac_staging.dart"
+            "program": "lib/flavors/fnac_staging.dart",
         }
     ]
 }
