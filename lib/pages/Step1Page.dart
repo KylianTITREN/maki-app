@@ -38,6 +38,8 @@ class _StepPage1State extends BaseState<StepPage1> {
     if (Const.FAST_MODE_ENABLED) {
       Registry.folderNumber = '12345678901';
     }
+
+    print(Registry.activeMessage);
   }
 
   @override

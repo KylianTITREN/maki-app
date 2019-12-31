@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:c_valide/FlavorConfig.dart';
+import 'package:c_valide/models/ActiveMessage.dart';
 import 'package:c_valide/models/Anomalies.dart';
 import 'package:c_valide/models/Availability.dart';
 import 'package:dio/dio.dart';
@@ -62,4 +63,7 @@ abstract class RestClient {
   Future<Availability> areServicesAvailable(
     @Query('token') String token,
   );
+
+  @GET("chat/is-active")
+  Future<ActiveMessage> isChatAvailable();
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:c_valide/components/BottomMsg.dart';
 import 'package:c_valide/res/Colours.dart';
-import 'package:c_valide/utils/DialogUtils.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:c_valide/app/Registry.dart';
@@ -152,7 +151,7 @@ class _MyFloatingButtonState extends State<MyFloatingButton> {
               var sheetController = showBottomSheet(
                   context: context,
                   backgroundColor: Colors.black54,
-                  builder: (context) => BottomMsg());
+                  builder: (context) => BottomMsg(_show));
 
               _showButton(false);
 
@@ -167,6 +166,7 @@ class _MyFloatingButtonState extends State<MyFloatingButton> {
   void _showButton(bool value) {
     setState(() {
       _show = value;
+      print(value);
     });
   }
 }

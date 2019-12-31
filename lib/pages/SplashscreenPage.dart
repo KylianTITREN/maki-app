@@ -136,8 +136,17 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
     Requests.areServicesAvailable(
       context,
       onSuccess: () {
-        _onRequestsFinished();
+        _startIsChatAvailable();
       },
+    );
+  }
+  
+  void _startIsChatAvailable(){
+    Requests.isChatAvailable(
+      context,
+      onSuccess: (){
+        _onRequestsFinished();
+      }
     );
   }
 

@@ -2,16 +2,17 @@ import 'package:c_valide/FlavorConfig.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/components/MsgListItem.dart';
 import 'package:c_valide/res/Colours.dart';
+import 'package:c_valide/utils/Dialogs.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-var _scaffoldContext;
-
 class BottomMsg extends StatefulWidget {
-  const BottomMsg({Key key}) : super(key: key);
+  const BottomMsg(this.hidden);
+
+  final bool hidden;
 
   @override
   _BottomMsgState createState() => _BottomMsgState();
@@ -51,7 +52,7 @@ class _BottomMsgState extends State<BottomMsg> {
         ),
         child: Padding(
           padding:
-              const EdgeInsets.only(left: 25, right: 25, top: 20, bottom: 35),
+              const EdgeInsets.only(left: 25, right: 25, top: 20, bottom: 25),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,40 +73,38 @@ class _BottomMsgState extends State<BottomMsg> {
                   ),
                 ],
               ),
-              SingleChildScrollView(
-                child: new Column(
-                  children: <Widget>[
-                    new Container(
-                      height: MediaQuery.of(context).size.height * 0.58,
-                      child: new FirebaseAnimatedList(
-                        query: reference.child('messages'),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 30, horizontal: 3),
-                        reverse: true,
-                        sort: (a, b) => b.key.compareTo(a.key),
-                        //comparing timestamp of messages to check which one would appear first
-                        itemBuilder: (_, DataSnapshot messageSnapshot,
-                            Animation<double> animation, int index) {
-                          return new MessageListItem(
-                            messageSnapshot: messageSnapshot,
-                            animation: animation,
-                            isFirst: index == numberOfMsg ? true : false,
-                          );
-                        },
+              Expanded(
+                child: SingleChildScrollView(
+                  child: new Column(
+                    children: <Widget>[
+                      new Container(
+                        height: MediaQuery.of(context).size.height * 0.58,
+                        child: new FirebaseAnimatedList(
+                          query: reference.child('messages'),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 30, horizontal: 3),
+                          reverse: true,
+                          sort: (a, b) => b.key.compareTo(a.key),
+                          //comparing timestamp of messages to check which one would appear first
+                          itemBuilder: (_, DataSnapshot messageSnapshot,
+                              Animation<double> animation, int index) {
+                            return new MessageListItem(
+                              messageSnapshot: messageSnapshot,
+                              animation: animation,
+                              isFirst: index == numberOfMsg ? true : false,
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    new Container(
-                      decoration: new BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colours.primaryColor),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: _buildTextComposer(),
-                    ),
-                    new Builder(builder: (BuildContext context) {
-                      _scaffoldContext = context;
-                      return new Container(width: 0.0, height: 0.0);
-                    })
-                  ],
+                      new Container(
+                        decoration: new BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colours.primaryColor),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: _buildTextComposer(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -134,8 +133,7 @@ class _BottomMsgState extends State<BottomMsg> {
   }
 
   Widget _buildTextComposer() {
-    return SingleChildScrollView(
-      child: new IconTheme(
+    return new IconTheme(
           data: new IconThemeData(
             color: _isComposingMessage
                 ? Theme.of(context).accentColor
@@ -167,12 +165,14 @@ class _BottomMsgState extends State<BottomMsg> {
                 ),
               ],
             ),
-          )),
+          ),
     );
   }
 
   Future<Null> _textMessageSubmitted(String text) async {
-    if (_msgFieldController.text.isNotEmpty) {
+    if (Registry.magasin == null) {
+      InformationDialog(context, text: 'Veuillez choisir un magasin').show();
+    } else if (_msgFieldController.text.isNotEmpty) {
       _msgFieldController.clear();
 
       setState(() {

@@ -90,6 +90,16 @@ class Requests {
       });
   }
 
+  static void isChatAvailable(BuildContext context, {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}){
+    RestClient.fastTimeout.isChatAvailable().then((response){
+      bool isAvailable = response?.activated;
+
+      print('Message is active ? : $isAvailable');
+
+      Registry.activeMessage = isAvailable;
+    });
+  }
+
   static void areServicesAvailable(BuildContext context, {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
     RestClient.fastTimeout.areServicesAvailable(Const.API_TOKEN).then((response) {
       bool isAvailable = response?.isAvailable ?? false;

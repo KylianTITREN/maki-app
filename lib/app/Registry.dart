@@ -6,6 +6,7 @@ class Registry {
   static String uid = '';
   static String chatUid = '';
   static Magasin magasin;
+  static bool activeMessage;
   static String comment = '';
   static String advisorText = '';
   static String folderNumber = '';
