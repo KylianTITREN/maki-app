@@ -53,8 +53,8 @@ class StepsPageState extends BaseState<StepsPage> {
       StepPage4(this),
     ];
 
-    if(currentStep == 0){
-      Timer(Duration(seconds: 3), () => showPopup == 0 ? _chooseShop():null);
+    if (currentStep == 0) {
+      Timer(Duration(seconds: 3), () => showPopup == 0 ? _chooseShop() : null);
     }
 
     _pageController = PageController(
@@ -218,6 +218,7 @@ class StepsPageState extends BaseState<StepsPage> {
       Registry.uid == null ? '' : Registry.uid,
       Registry.folderNumber == null ? '' : Registry.folderNumber,
       Registry.magasin == null ? 0 : int.parse(Registry.magasin.id),
+      Registry.magasin == null ? "" : Registry.magasin.name,
       callback: (String uid) {
         _listenUnreadChat();
         Registry.chatUid = uid;
@@ -229,6 +230,7 @@ class StepsPageState extends BaseState<StepsPage> {
     FirebaseUtils.updateShopId(
       Registry.chatUid,
       int.parse(Registry.magasin.id),
+      Registry.magasin.name,
     );
   }
 
@@ -259,6 +261,7 @@ class StepsPageState extends BaseState<StepsPage> {
 
   @override
   Widget onBuild() {
+    print(_currentStep);
     return WillPopScope(
       onWillPop: () async {
         showDialog(
@@ -383,7 +386,7 @@ class StepsPageState extends BaseState<StepsPage> {
                       currentStep: _currentStep,
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                     )
-                  : Container(),
+                  : Container(child: Text('yo')),
             ),
           ),
           middle: PageView(
@@ -437,6 +440,7 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void goToPage(int page) {
     _currentStep = page % _pageViews.length;
+    dismissKeyboard(context);
     _animateToPage();
   }
 

@@ -236,7 +236,8 @@ class _StepPage1State extends BaseState<StepPage1> {
     FirebaseUtils.createChat(
       Registry.uid == null ? '' : Registry.uid,
       Registry.folderNumber == null ? '' : Registry.folderNumber,
-      int.parse(Registry.magasin.codeApporteur),
+      Registry.magasin == null ? 0 : int.parse(Registry.magasin.id),
+      Registry.magasin == null ? "" : Registry.magasin.name,
       callback: (String uid) {
         DialogUtils.dismiss(context);
         Registry.chatUid = uid;

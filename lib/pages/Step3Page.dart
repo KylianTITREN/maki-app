@@ -75,7 +75,6 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
 
   @override
   Widget onBuild() {
-    print(widget.parentState.currentState);
     return Container(
       padding: const EdgeInsets.all(32.0),
       child: Notifier.of(context).register<List<Anomalie>>(

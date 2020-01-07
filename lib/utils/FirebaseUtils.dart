@@ -40,7 +40,7 @@ class FirebaseUtils {
     }
   }
 
-  static void createChat(String folderId, String folderNumber, int shopId,
+  static void createChat(String folderId, String folderNumber, int shopId, String shopName,
       {CreateCallback callback, VoidCallback errorCallback}) {
     if (folderId != null && Registry.activeMessage == true) {
       DatabaseReference reference = FirebaseDatabase.instance
@@ -53,6 +53,7 @@ class FirebaseUtils {
         'mobile_folder_id': folderId,
         'mobile_folder_number':folderNumber,
         'shop_id': shopId,
+        'shop_name':shopName,
         'created_at': DateTime.now().millisecondsSinceEpoch,
       }).then((success) {
         if (callback != null) {
@@ -84,15 +85,15 @@ class FirebaseUtils {
     }
   }
 
-  static void updateShopId(String uid, int shopId, {CreateCallback callback}) {
-    if (uid != null && uid.isNotEmpty && shopId != null) {
+  static void updateShopId(String uid, int shopId, String shopName, {CreateCallback callback}) {
+    if (uid != null && uid.isNotEmpty && shopId != null && shopName != null) {
       DatabaseReference reference = FirebaseDatabase.instance
           .reference()
           .child(parentFolder)
           .child('chats')
           .child(uid);
 
-      reference.update({'shop_id': shopId}).then((success) {
+      reference.update({'shop_id': shopId, 'shop_name': shopName}).then((success) {
         if (callback != null) {
           callback(reference.key);
         }
