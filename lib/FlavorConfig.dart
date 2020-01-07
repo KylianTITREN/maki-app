@@ -9,7 +9,6 @@ class FlavorValues {
     this.appName,
     this.flavorName,
     this.apiBaseUrl,
-    this.fnacApiBaseUrl,
     this.enseigneId,
     this.autoUpdateIdiOS,
     this.autoUpdateIdAndroid,
@@ -18,7 +17,6 @@ class FlavorValues {
   final String appName;
   final String flavorName;
   final String apiBaseUrl;
-  final String fnacApiBaseUrl;
   final int enseigneId;
   final String autoUpdateIdiOS;
   final String autoUpdateIdAndroid;
