@@ -118,7 +118,6 @@ class _StepPage4State extends BaseState<StepPage4> {
                               listOfAnomalies(_anomalies, true),
                               Notifier.of(context).register<String>(
                                   Strings.notifyComment, (response) {
-                                print(response);
                                 String comment = response.hasData
                                     ? response.data
                                     : (Registry.comment?.isNotEmpty ?? false
@@ -225,7 +224,6 @@ class _StepPage4State extends BaseState<StepPage4> {
                     ),
                     Notifier.of(context).register<String>(Strings.notifyComment,
                         (response) {
-                      print(_anomalies);
                       String comment = response.hasData
                           ? response.data
                           : (Registry.comment?.isNotEmpty ?? false

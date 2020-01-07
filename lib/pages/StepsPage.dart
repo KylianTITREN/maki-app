@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:c_valide/api/Requests.dart';
 import 'package:c_valide/api/RestClient.dart';
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
@@ -7,14 +8,17 @@ import 'package:c_valide/basics/BaseStatefulWidget.dart';
 import 'package:c_valide/components/CPage.dart';
 import 'package:c_valide/components/CStepProgressBar.dart';
 import 'package:c_valide/components/SatisfactionPopup.dart';
+import 'package:c_valide/components/ShopPopup.dart';
 import 'package:c_valide/components/ThreePartsPage.dart';
 import 'package:c_valide/models/Anomalies.dart';
+import 'package:c_valide/models/Magasin.dart';
 import 'package:c_valide/pages/Step1Page.dart';
 import 'package:c_valide/pages/Step2Page.dart';
 import 'package:c_valide/pages/Step3Page.dart';
 import 'package:c_valide/pages/Step4Page.dart';
 import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
+import 'package:c_valide/utils/Dialogs.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:c_valide/utils/Page.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -35,6 +39,9 @@ class StepsPageState extends BaseState<StepsPage> {
   PageController _pageController;
   StreamSubscription<Event> _subscription;
 
+  int showPopup = 0;
+  Magasin filterMagasin;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +52,10 @@ class StepsPageState extends BaseState<StepsPage> {
       StepPage3(this),
       StepPage4(this),
     ];
+
+    if(currentStep == 0){
+      Timer(Duration(seconds: 3), () => showPopup == 0 ? _chooseShop():null);
+    }
 
     _pageController = PageController(
       initialPage: _currentStep,
@@ -190,6 +201,62 @@ class StepsPageState extends BaseState<StepsPage> {
     }
   }
 
+  void updateData(Magasin shopChoosen) {
+    LoadingDialog(context, text: Strings.textLoading).show();
+    Requests.getShop(context, onSuccess: () {
+      quitDialog(context);
+      setState(() {
+        Registry.magasin = shopChoosen;
+      });
+    }, onFailed: () {
+      quitDialog(context);
+    });
+  }
+
+  void _createChat() {
+    FirebaseUtils.createChat(
+      Registry.uid == null ? '' : Registry.uid,
+      Registry.folderNumber == null ? '' : Registry.folderNumber,
+      Registry.magasin == null ? 0 : int.parse(Registry.magasin.id),
+      callback: (String uid) {
+        _listenUnreadChat();
+        Registry.chatUid = uid;
+      },
+    );
+  }
+
+  void _updateChatShopId() {
+    FirebaseUtils.updateShopId(
+      Registry.chatUid,
+      int.parse(Registry.magasin.id),
+    );
+  }
+
+  void _chooseShop() {
+    showPopup++;
+    if (Registry.uid.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (_) => ShopPopup(
+          onValueChanged: (filterMagasin) {
+            Registry.magasin = filterMagasin;
+            quitDialog(context);
+            updateData(filterMagasin);
+            Registry.chatUid.isEmpty ? _createChat() : _updateChatShopId();
+          },
+        ),
+      );
+    }
+  }
+
+  void _listenUnreadChat() {
+    FirebaseUtils.listenUnreadChat(Registry.chatUid, callback: (value) {
+      setState(() {
+        Registry.messageBadge = value;
+      });
+    });
+  }
+
   @override
   Widget onBuild() {
     return WillPopScope(
@@ -222,12 +289,46 @@ class StepsPageState extends BaseState<StepsPage> {
         return false;
       },
       child: CPage(
+        appBar: AppBar(
+          backgroundColor: Colors.black87,
+          elevation: 0,
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: GestureDetector(
+                onTap: () {
+                  _chooseShop();
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      Registry.magasin == null
+                          ? 'Aucun sélectionné'
+                          : Registry.magasin.name,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Image.asset(
+                      "assets/images/shape-shop.png",
+                      fit: BoxFit.contain,
+                      color: Colors.white,
+                      height: 24,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
         child: ThreePartsPage(
           middleExpanded: true,
           top: Align(
             alignment: Alignment.topCenter,
             child: Container(
-              margin: const EdgeInsets.only(top: 40.0, bottom: 0),
+              margin: const EdgeInsets.only(top: 20.0, bottom: 0),
               child: _currentStep > 0
                   ? CStepProgressBar(
                       <CStep>[

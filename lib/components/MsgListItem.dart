@@ -17,7 +17,7 @@ class MessageListItem extends StatelessWidget {
           new CurvedAnimation(parent: animation, curve: Curves.decelerate),
       child: Column(
         children: <Widget>[
-          isFirst
+          isFirst 
               ? new Text(
                   DateFormat('kk:mm').format(DateTime.now()),
                   style: TextStyle(

@@ -1,132 +1,55 @@
-import 'dart:async';
-
+import 'package:c_valide/FlavorConfig.dart';
 import 'package:c_valide/components/BottomMsg.dart';
 import 'package:c_valide/res/Colours.dart';
-import 'package:c_valide/utils/FirebaseUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:c_valide/app/Registry.dart';
-import 'package:c_valide/models/Magasin.dart';
-import 'package:c_valide/components/ShopPopup.dart';
-import 'package:c_valide/utils/Page.dart';
-import 'package:c_valide/utils/Dialogs.dart';
-import 'package:c_valide/api/Requests.dart';
-import 'package:c_valide/res/Strings.dart';
 
-class CPage extends StatefulWidget {
-  const CPage({this.child, this.fab, this.backgroundColor});
+class CPage extends StatelessWidget {
+  CPage({this.child, this.appBar, this.fab, this.backgroundColor});
 
   final Widget child;
+  final Widget appBar;
   final Widget fab;
   final Color backgroundColor;
 
-  @override
-  CPageState createState() => CPageState();
-}
-
-class CPageState extends State<CPage> {
-  int showPopup = 0;
-  Magasin filterMagasin;
-
-  @override
-  void initState() {
-    super.initState();
-
-    Timer(Duration(seconds: 2), () => showPopup == 0 ? _chooseShop() : null);
-  }
-
-  void updateData(Magasin shopChoosen) {
-    LoadingDialog(context, text: Strings.textLoading).show();
-    Requests.startAllDataRequest(
-      context,
-      description: Strings.textErrorOccurredTryAgain,
-      negative: Strings.textCancel,
-      onRequestFinished: () {
-        quitDialog(context);
-        setState(() {
-          Registry.magasin = shopChoosen;
-        });
-      },
-      onRequestError: () {
-        quitDialog(context);
-      },
-    );
-  }
-
-  void _createChat(){
-    FirebaseUtils.createChat(
-      Registry.folderNumber == null ? '' : Registry.folderNumber,
-      Registry.magasin == null ? 0 : int.parse(Registry.magasin.codeApporteur),
-      callback: (String uid) {
-        Registry.chatUid = uid;
-      },
-    );
-  }
-
-  void _updateChatShopId(){
-    FirebaseUtils.updateShopId(
-      Registry.chatUid,
-      int.parse(Registry.magasin.codeApporteur),
-    );
-  }
-
-  void _chooseShop() {
-    showPopup++;
-    if (Registry.uid.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (_) => ShopPopup(
-          onValueChanged: (filterMagasin) {
-            Registry.magasin = filterMagasin;
-            quitDialog(context);
-            updateData(filterMagasin);
-            showPopup == 1 ? _createChat() : _updateChatShopId();
-          },
-        ),
-      );
-    }
-  }
+  static String parentFolder = FlavorConfig.isProduction() ? 'prod' : 'test';
+  int unread = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: appBar,
       body: Container(
-        color: widget.backgroundColor ?? Colors.black87,
-        child: Stack(children: <Widget>[
-          Positioned(
-            top: 30,
-            right: 30,
-            child: GestureDetector(
-              onTap: () {
-                _chooseShop();
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    Registry.magasin == null
-                        ? 'Aucun sélectionné'
-                        : Registry.magasin.name,
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Image.asset(
-                    "assets/images/shape-shop.png",
-                    fit: BoxFit.contain,
-                    color: Colors.white,
-                    height: 24,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SafeArea(
-            child: widget.child,
-          ),
-        ]),
+        color: backgroundColor ?? Colors.black87,
+        child: SafeArea(
+          child: child,
+        ),
       ),
-      floatingActionButton: widget.fab,
+      floatingActionButton: Registry.activeMessage != false
+          ? Stack(
+              children: <Widget>[
+                fab,
+                Container(
+                  transform: Matrix4.translationValues(-7.0, -7.0, 0.0),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100.0),
+                      color: Registry.messageBadge != 0
+                          ? Colors.red
+                          : Colors.transparent),
+                  child: Text(
+                    Registry.messageBadge != 0
+                        ? Registry.messageBadge.toString()
+                        : '',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            )
+          : Container(),
     );
   }
 }
@@ -138,6 +61,7 @@ class MyFloatingButton extends StatefulWidget {
 
 class _MyFloatingButtonState extends State<MyFloatingButton> {
   bool _show = true;
+
   @override
   Widget build(BuildContext context) {
     return _show
@@ -151,7 +75,7 @@ class _MyFloatingButtonState extends State<MyFloatingButton> {
               var sheetController = showBottomSheet(
                   context: context,
                   backgroundColor: Colors.black54,
-                  builder: (context) => BottomMsg(_show));
+                  builder: (context) => BottomMsg());
 
               _showButton(false);
 
@@ -166,7 +90,6 @@ class _MyFloatingButtonState extends State<MyFloatingButton> {
   void _showButton(bool value) {
     setState(() {
       _show = value;
-      print(value);
     });
   }
 }

@@ -41,9 +41,10 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
           onSuccess: () {
             _requestsPending = 0;
             _startTimer();
-            _startDataRequest();
             if (kReleaseMode || Const.TEST_MODE) {
               _startAreServicesAvailableRequest();
+            } else {
+              _startDataRequest();
             }
 //          _startSharedPreferencesInitialization();
           },
@@ -132,29 +133,25 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
   }
 
   void _startAreServicesAvailableRequest() {
-    _requestsPending++;
     Requests.areServicesAvailable(
       context,
       onSuccess: () {
-        _startIsChatAvailable();
+        _startDataRequest();
       },
     );
   }
-  
-  void _startIsChatAvailable(){
-    Requests.isChatAvailable(
-      context,
-      onSuccess: (){
-        _onRequestsFinished();
-      }
-    );
+
+  void _startIsChatAvailable() {
+    Requests.isChatAvailable(context, onSuccess: () {
+      _onRequestsFinished();
+    });
   }
 
   _startDataRequest() {
-    Requests.startAllDataRequest(
+    Requests.getShop(
       context,
-      onRequestFinished: _onRequestsFinished,
-      onRequestError: () {
+      onSuccess: _startIsChatAvailable,
+      onFailed: () {
         --_requestsPending;
       },
     );

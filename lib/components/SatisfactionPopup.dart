@@ -8,7 +8,6 @@ import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/DialogUtils.dart';
 import 'package:c_valide/utils/Page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 

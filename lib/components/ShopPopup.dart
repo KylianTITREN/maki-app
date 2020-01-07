@@ -1,6 +1,5 @@
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/components/dropdownBtn.dart';
-import 'package:c_valide/models/Region.dart';
 import 'package:c_valide/models/Magasin.dart';
 import 'package:c_valide/res/Colours.dart';
 import 'package:c_valide/res/Strings.dart';
@@ -26,7 +25,6 @@ class ShopPopup extends StatefulWidget {
 class ShopPopupState extends State<ShopPopup> {
   List<Magasin> magasinArray;
   Magasin magasin;
-  Region region;
 
   @override
   void initState() {
@@ -131,13 +129,7 @@ class ShopPopupState extends State<ShopPopup> {
   }
 
   void updateShopArray() {
-    magasinArray = List<Magasin>.from(
-      region == null || region.id < 0
-          ? Registry.allData.unique.magasins.toList()
-          : Registry.allData.unique.magasins
-              .where((e) => e.regionId == region.id)
-              .toList(),
-    );
+    magasinArray = List<Magasin>.from(Registry.allShop.toList());
     magasinArray?.sort((e1, e2) => e1.name.compareTo(e2.name));
     magasinArray?.insert(
         0, Magasin(codeApporteur: '', name: Strings.textAllShops));

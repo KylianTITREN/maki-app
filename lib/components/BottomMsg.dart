@@ -10,9 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BottomMsg extends StatefulWidget {
-  const BottomMsg(this.hidden);
-
-  final bool hidden;
+  const BottomMsg();
 
   @override
   _BottomMsgState createState() => _BottomMsgState();
@@ -62,7 +60,7 @@ class _BottomMsgState extends State<BottomMsg> {
                 children: <Widget>[
                   ModalBar(),
                   Padding(
-                    padding: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.only(top: 20, left: 12),
                     child: Text(
                       'Conseiller',
                       style: TextStyle(
@@ -84,8 +82,10 @@ class _BottomMsgState extends State<BottomMsg> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 30, horizontal: 3),
                           reverse: true,
-                          sort: (a, b) => b.key.compareTo(a.key),
-                          //comparing timestamp of messages to check which one would appear first
+                          sort: (a, b) => DateTime.fromMillisecondsSinceEpoch(
+                                  b.value['created_at'])
+                              .compareTo(DateTime.fromMillisecondsSinceEpoch(
+                                  a.value['created_at'])),
                           itemBuilder: (_, DataSnapshot messageSnapshot,
                               Animation<double> animation, int index) {
                             return new MessageListItem(
@@ -134,38 +134,38 @@ class _BottomMsgState extends State<BottomMsg> {
 
   Widget _buildTextComposer() {
     return new IconTheme(
-          data: new IconThemeData(
-            color: _isComposingMessage
-                ? Theme.of(context).accentColor
-                : Theme.of(context).disabledColor,
-          ),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: new Row(
-              children: <Widget>[
-                new Flexible(
-                  child: TextField(
-                    controller: _msgFieldController,
-                    onChanged: (String messageText) {
-                      setState(() {
-                        _isComposingMessage = messageText.length > 0;
-                      });
-                    },
-                    focusNode: FocusNode(),
-                    onSubmitted: _textMessageSubmitted,
-                    decoration: new InputDecoration.collapsed(
-                        hintText: "Envoyer un message"),
-                  ),
-                ),
-                new Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: Theme.of(context).platform == TargetPlatform.iOS
-                      ? getIOSSendButton()
-                      : getDefaultSendButton(),
-                ),
-              ],
+      data: new IconThemeData(
+        color: _isComposingMessage
+            ? Theme.of(context).accentColor
+            : Theme.of(context).disabledColor,
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: new Row(
+          children: <Widget>[
+            new Flexible(
+              child: TextField(
+                controller: _msgFieldController,
+                onChanged: (String messageText) {
+                  setState(() {
+                    _isComposingMessage = messageText.length > 0;
+                  });
+                },
+                focusNode: FocusNode(),
+                onSubmitted: _textMessageSubmitted,
+                decoration: new InputDecoration.collapsed(
+                    hintText: "Envoyer un message"),
+              ),
             ),
-          ),
+            new Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Theme.of(context).platform == TargetPlatform.iOS
+                  ? getIOSSendButton()
+                  : getDefaultSendButton(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

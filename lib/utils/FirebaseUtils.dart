@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:c_valide/FlavorConfig.dart';
+import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/utils/Page.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -8,18 +9,24 @@ import 'package:flutter/material.dart';
 
 typedef void CreateCallback(String uid);
 typedef void StateChangedCallback(String state);
+typedef void BadgeChangedCallback(int number);
 
 class FirebaseUtils {
   static String parentFolder = FlavorConfig.isProduction() ? 'prod' : 'test';
 
-  static void createFolder(String folderNumber, int shopId, {CreateCallback callback, VoidCallback errorCallback}) {
+  static void createFolder(String folderNumber, int shopId,
+      {CreateCallback callback, VoidCallback errorCallback}) {
     if (folderNumber != null) {
-      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('mobile_folders').push();
+      DatabaseReference reference = FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('mobile_folders')
+          .push();
 
       reference.set({
         'folder_number': folderNumber,
         'id_enseigne': 9,
-        'shop_id':shopId,
+        'shop_id': shopId,
         'state': 'CREATED',
         'created_at': DateTime.now().millisecondsSinceEpoch,
       }).then((success) {
@@ -33,13 +40,19 @@ class FirebaseUtils {
     }
   }
 
-  static void createChat(String folderNumber, int shopId, {CreateCallback callback, VoidCallback errorCallback}) {
-    if (folderNumber != null) {
-      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').push();
+  static void createChat(String folderId, String folderNumber, int shopId,
+      {CreateCallback callback, VoidCallback errorCallback}) {
+    if (folderId != null && Registry.activeMessage == true) {
+      DatabaseReference reference = FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('chats')
+          .push();
 
       reference.set({
-        'mobile_folder_id': folderNumber,
-        'shop_id':shopId,
+        'mobile_folder_id': folderId,
+        'mobile_folder_number':folderNumber,
+        'shop_id': shopId,
         'created_at': DateTime.now().millisecondsSinceEpoch,
       }).then((success) {
         if (callback != null) {
@@ -52,11 +65,16 @@ class FirebaseUtils {
     }
   }
 
-  static void setChatFolderId(String uid, String folderNumber, {CreateCallback callback}) {
-    if (uid != null && uid.isNotEmpty && folderNumber != null) {
-      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').child(uid);
+  static void setChatFolderId(String uid, String folderNumber, String folderId,
+      {CreateCallback callback}) {
+    if (uid != null && uid.isNotEmpty && folderNumber != null && folderNumber.isNotEmpty && folderId.isNotEmpty && folderId != null) {
+      DatabaseReference reference = FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('chats')
+          .child(uid);
 
-      reference.update({'folderNumber': folderNumber}).then((success) {
+      reference.update({'mobile_folder_id': folderId, 'mobile_folder_number': folderNumber}).then((success) {
         if (callback != null) {
           callback(reference.key);
         }
@@ -68,7 +86,11 @@ class FirebaseUtils {
 
   static void updateShopId(String uid, int shopId, {CreateCallback callback}) {
     if (uid != null && uid.isNotEmpty && shopId != null) {
-      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').child(uid);
+      DatabaseReference reference = FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('chats')
+          .child(uid);
 
       reference.update({'shop_id': shopId}).then((success) {
         if (callback != null) {
@@ -80,13 +102,20 @@ class FirebaseUtils {
     }
   }
 
-  static void setChatMessage(String uid, String text, {CreateCallback callback}) {
+  static void setChatMessage(String uid, String text,
+      {CreateCallback callback}) {
     if (uid != null && uid.isNotEmpty && text != null) {
-      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('chats').child(uid).child('messages').push();
+      DatabaseReference reference = FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('chats')
+          .child(uid)
+          .child('messages')
+          .push();
 
       reference.set({
         'message': text,
-        'from':"APP",
+        'from': "APP",
         'created_at': DateTime.now().millisecondsSinceEpoch,
       }).then((success) {
         if (callback != null) {
@@ -98,9 +127,43 @@ class FirebaseUtils {
     }
   }
 
-  static void setFolderState(String uid, String state, {CreateCallback callback}) {
+  static StreamSubscription<Event> listenUnreadChat(String uid,
+      {@required BadgeChangedCallback callback}) {
+    return FirebaseDatabase.instance
+        .reference()
+        .child(parentFolder)
+        .child('chats')
+        .child(uid)
+        .onChildChanged
+        .listen((Event event) {
+      if (event.snapshot.value['messages'] != null && event.snapshot.value['messages'].isNotEmpty) {
+        int index = 0;
+        Map<dynamic, dynamic> values = event.snapshot.value['messages'];
+        values.forEach((key, msg) {
+          DateTime msgTime =
+              DateTime.fromMillisecondsSinceEpoch(msg['created_at']);
+          if (msgTime.isAfter(Registry.lastMsg)) {
+            if (msg['from'] == 'BO') {
+              index++;
+            } else {
+              index = 0;
+              Registry.lastMsg = msgTime;
+            }
+          }
+          callback(index);
+        });
+      }
+    }, cancelOnError: false);
+  }
+
+  static void setFolderState(String uid, String state,
+      {CreateCallback callback}) {
     if (uid != null && uid.isNotEmpty && state != null) {
-      DatabaseReference reference = FirebaseDatabase.instance.reference().child(parentFolder).child('mobile_folders').child(uid);
+      DatabaseReference reference = FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('mobile_folders')
+          .child(uid);
 
       reference.update({'state': state}).then((success) {
         if (callback != null) {
@@ -154,7 +217,13 @@ class FirebaseUtils {
 
   static void deleteFolder(String uid, {VoidCallback callback}) {
     if (uid != null) {
-      FirebaseDatabase.instance.reference().child(parentFolder).child('mobile_folders').child(uid).remove().then((T) {
+      FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('mobile_folders')
+          .child(uid)
+          .remove()
+          .then((T) {
         if (callback != null) {
           callback();
         }
@@ -162,9 +231,16 @@ class FirebaseUtils {
     }
   }
 
-  static StreamSubscription<Event> listenState(String uid, List<String> states, {@required StateChangedCallback callback}) {
-    return FirebaseDatabase.instance.reference().child(parentFolder).child('mobile_folders').child(uid).child('state').onValue.listen(
-        (Event event) {
+  static StreamSubscription<Event> listenState(String uid, List<String> states,
+      {@required StateChangedCallback callback}) {
+    return FirebaseDatabase.instance
+        .reference()
+        .child(parentFolder)
+        .child('mobile_folders')
+        .child(uid)
+        .child('state')
+        .onValue
+        .listen((Event event) {
       String state = event.snapshot.value;
       if (states.contains(state)) {
         callback(state);

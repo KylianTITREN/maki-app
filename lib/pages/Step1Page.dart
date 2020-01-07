@@ -38,8 +38,6 @@ class _StepPage1State extends BaseState<StepPage1> {
     if (Const.FAST_MODE_ENABLED) {
       Registry.folderNumber = '12345678901';
     }
-
-    print(Registry.activeMessage);
   }
 
   @override
@@ -187,7 +185,6 @@ class _StepPage1State extends BaseState<StepPage1> {
         _startAreServicesAvailableRequest();
       } else {
         _startCreateFolderRequest();
-        _setChatFolderId();
       }
     }
   }
@@ -198,7 +195,6 @@ class _StepPage1State extends BaseState<StepPage1> {
       quitApp: false,
       onSuccess: () {
         _startCreateFolderRequest();
-        _setChatFolderId();
       },
       onFailed: () {
         DialogUtils.dismiss(context);
@@ -209,12 +205,13 @@ class _StepPage1State extends BaseState<StepPage1> {
   void _startCreateFolderRequest() {
     FirebaseUtils.createFolder(
       Registry.folderNumber,
-      int.parse(Registry.magasin.codeApporteur),
+      int.parse(Registry.magasin.id),
       callback: (String uid) {
         DialogUtils.dismiss(context);
         Registry.uid = uid;
         Registry.actualVideoDuration = Duration.zero;
         widget.parentState.goToPage(1);
+        _setChatFolderId();
       },
       errorCallback: () {
         DialogUtils.dismiss(context);
@@ -227,6 +224,7 @@ class _StepPage1State extends BaseState<StepPage1> {
       FirebaseUtils.setChatFolderId(
       Registry.chatUid,
       Registry.folderNumber,
+      Registry.uid
     );
     }else{
       _createChat();
@@ -236,6 +234,7 @@ class _StepPage1State extends BaseState<StepPage1> {
 
   void _createChat(){
     FirebaseUtils.createChat(
+      Registry.uid == null ? '' : Registry.uid,
       Registry.folderNumber == null ? '' : Registry.folderNumber,
       int.parse(Registry.magasin.codeApporteur),
       callback: (String uid) {

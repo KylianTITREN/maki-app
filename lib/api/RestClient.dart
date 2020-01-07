@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:c_valide/FlavorConfig.dart';
 import 'package:c_valide/models/ActiveMessage.dart';
+import 'package:c_valide/models/AllShop.dart';
 import 'package:c_valide/models/Anomalies.dart';
 import 'package:c_valide/models/Availability.dart';
 import 'package:dio/dio.dart';
@@ -62,6 +63,12 @@ abstract class RestClient {
   @GET("advisers/is-available")
   Future<Availability> areServicesAvailable(
     @Query('token') String token,
+  );
+
+  @GET("magasins")
+  Future<AllShop> getShop(
+    @Query('token') String token,
+    @Query('enseigne_id') int enseigneId,
   );
 
   @GET("chat/is-active")
