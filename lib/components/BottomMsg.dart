@@ -39,7 +39,6 @@ class _BottomMsgState extends State<BottomMsg> {
 
     return Container(
       height: MediaQuery.of(context).size.height,
-      padding: EdgeInsets.only(top: 120),
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(238, 238, 238, 1),
@@ -60,7 +59,7 @@ class _BottomMsgState extends State<BottomMsg> {
                 children: <Widget>[
                   ModalBar(),
                   Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 12),
+                    padding: const EdgeInsets.only(top: 20, left: 12, bottom: 15),
                     child: Text(
                       'Conseiller',
                       style: TextStyle(
@@ -76,7 +75,7 @@ class _BottomMsgState extends State<BottomMsg> {
                   child: new Column(
                     children: <Widget>[
                       new Container(
-                        height: MediaQuery.of(context).size.height * 0.58,
+                        height: MediaQuery.of(context).size.height * 0.61,
                         child: new FirebaseAnimatedList(
                           query: reference.child('messages'),
                           padding: const EdgeInsets.symmetric(
@@ -151,6 +150,7 @@ class _BottomMsgState extends State<BottomMsg> {
                     _isComposingMessage = messageText.length > 0;
                   });
                 },
+                maxLength: 280,
                 focusNode: FocusNode(),
                 onSubmitted: _textMessageSubmitted,
                 decoration: new InputDecoration.collapsed(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/basics/BaseState.dart';
 import 'package:c_valide/basics/BaseStatefulWidget.dart';
@@ -30,10 +32,26 @@ class StepPage4 extends BaseStatefulWidget {
 
 class _StepPage4State extends BaseState<StepPage4> {
   List<Anomalie> _anomalies = [];
-  
+
+  void initState() {
+    super.initState();
+  }
+
   @override
   void onEnter() {
     super.onEnter();
+    Timer.periodic(Duration(seconds: 2, milliseconds: 500), (timer) {
+      if (Registry.dialog) {
+        if (Registry.oldState == 'MOBILE_APP_CLOSED' &&
+            widget.parentState.currentState == 'ANOMALIES') {
+          Registry.oldState = '';
+        } else {
+          _onAdvisorCommentBtnPressed(Registry.comment, _anomalies);
+          Registry.dialog = false;
+        }
+        timer.cancel();
+      }
+    });
     widget.parentState.initSubscription();
   }
 
@@ -45,8 +63,6 @@ class _StepPage4State extends BaseState<StepPage4> {
 
   @override
   Widget onBuild() {
-    FirebaseUtils.deleteFolder(Registry.uid);
-
     return Container(
       padding: const EdgeInsets.all(32.0),
       child: Registry.folderValidated == 1
@@ -285,6 +301,7 @@ class _StepPage4State extends BaseState<StepPage4> {
 
   void _onClose() {
     widget.parentState.onStepsOver(() {
+      FirebaseUtils.deleteFolder(Registry.uid);
       delay(widget.parentState.restartStepsPage, 300);
     });
   }
@@ -297,28 +314,42 @@ class _StepPage4State extends BaseState<StepPage4> {
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                anomalies.length > 0 ? Text(
-                  'Anomalie(s)',
-                  textAlign: TextAlign.left,
-                  style: Styles.appBarTitle(context),
-                ) : Container(),
-                SizedBox(height: 15.0),
-                listOfAnomalies(anomalies, false),
-                SizedBox(height: 15.0),
-                Text(
-                  Strings.textAdvisorComment,
-                  textAlign: TextAlign.left,
-                  style: Styles.appBarTitle(context),
-                ),
-                SizedBox(height: 15.0),
-                Text(
-                  comment,
-                  style: TextStyle(fontSize: 14, color: Colours.grey),
-                ),
-                SizedBox(height: 40.0),
-                Text(
-                  Registry.advisorText,
-                ),
+                anomalies.length > 0
+                    ? Column(
+                        children: <Widget>[
+                          Text(
+                            'Anomalie(s)',
+                            textAlign: TextAlign.left,
+                            style: Styles.appBarTitle(context),
+                          ),
+                          SizedBox(height: 15.0),
+                          listOfAnomalies(anomalies, false),
+                          SizedBox(height: 15.0),
+                        ],
+                      )
+                    : Container(),
+                comment != null && comment?.isNotEmpty
+                    ? Column(
+                        children: <Widget>[
+                          Text(
+                            Strings.textAdvisorComment,
+                            textAlign: TextAlign.left,
+                            style: Styles.appBarTitle(context),
+                          ),
+                          SizedBox(height: 15.0),
+                          Text(
+                            comment,
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                          ),
+                          SizedBox(height: 40.0)
+                        ],
+                      )
+                    : Container(),
+                Registry.advisorText.isNotEmpty
+                    ? Text(
+                        Registry.advisorText,
+                      )
+                    : Container(),
               ],
             ),
           ),

@@ -135,7 +135,7 @@ class ShopPopupState extends State<ShopPopup> {
       magasinArray?.sort((e1, e2) => e1.name.compareTo(e2.name));
     }
     magasinArray?.insert(
-        0, Magasin(codeApporteur: '', name: Strings.textAllShops));
+        0, Magasin(codeApporteur: '', name: Strings.textSelect));
     magasin = magasinArray.first;
   }
 }

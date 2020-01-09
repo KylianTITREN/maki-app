@@ -79,6 +79,10 @@ void dismissKeyboard(BuildContext context) {
   FocusScope.of(context).requestFocus(new FocusNode());
 }
 
+void reloadBuildContext(BuildContext context){
+  Theme.of(context);
+}
+
 class Page {
   static const MethodChannel _rotationChannel = const MethodChannel('forceOrientation');
 

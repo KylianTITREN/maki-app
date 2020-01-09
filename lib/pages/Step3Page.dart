@@ -40,31 +40,27 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
   int requestsPending = 0;
   int requestDialog = 0;
 
+  void initState() {
+    super.initState();
+  }
+
   @override
   void onEnter() {
     super.onEnter();
-    widget.parentState.initSubscription();
-    Timer.periodic(Duration(seconds: 2), (timer) {
-      if (widget.parentState.currentState == 'ANOMALIES' &&
-          requestDialog == 0) {
-        requestDialog = 1;
-        _onAdvisorCommentBtnPressed(Registry.comment, _anomalies);
+    Timer.periodic(Duration(seconds: 2, milliseconds: 500), (timer) {
+      print(widget.parentState.currentState);
+      if (Registry.dialog) {
+        if (Registry.oldState == 'MOBILE_APP_CLOSED' &&
+            widget.parentState.currentState == 'ANOMALIES') {
+          Registry.oldState = '';
+        } else {
+          _onAdvisorCommentBtnPressed(Registry.comment, _anomalies);
+          Registry.dialog = false;
+        }
         timer.cancel();
       }
     });
-//    if (widget.parentState.currentStep == 2 && _anomalies.length <= 0) {
-//      if (Const.DEMO) {
-//        delay(() {
-//          _startAnomaliesRequest();
-//        }, 10000);
-//      } else {
-//      widget.parentState.initSubscription();
-//
-//        if (widget.parentState.currentState == 'ANOMALIES') {
-//          _startAnomaliesRequest();
-//        }
-//      }
-//    }
+    widget.parentState.initSubscription();
   }
 
   @override
@@ -234,7 +230,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                         ],
                       )
                     : Container(),
-                comment.isNotEmpty
+                comment != null && comment?.isNotEmpty
                     ? Column(
                         children: <Widget>[
                           Text(
@@ -245,7 +241,7 @@ class _StepPage3State extends BaseState<StepPage3> with WidgetsBindingObserver {
                           SizedBox(height: 15.0),
                           Text(
                             comment,
-                            style: TextStyle(fontSize: 14, color: Colours.grey),
+                            style: TextStyle(fontSize: 18, color: Colors.black),
                           ),
                           SizedBox(height: 40.0)
                         ],

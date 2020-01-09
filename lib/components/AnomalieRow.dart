@@ -19,7 +19,7 @@ class AnomalieRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: anomalie.isResolved || !anomalie.pictureNeeded
             ? Colours.primaryColor
-            : Colours.darkGrey,
+            : Colors.green,
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Row(

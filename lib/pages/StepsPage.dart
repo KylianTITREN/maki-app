@@ -24,6 +24,7 @@ import 'package:c_valide/utils/Page.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:notifier/notifier.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StepsPage extends BaseStatefulWidget {
   @override
@@ -53,7 +54,7 @@ class StepsPageState extends BaseState<StepsPage> {
       StepPage4(this),
     ];
 
-    if (currentStep == 0) {
+    if (Registry.magasin == null && Registry.activeShop == true) {
       Timer(Duration(seconds: 3), () => showPopup == 0 ? _chooseShop() : null);
     }
 
@@ -72,6 +73,7 @@ class StepsPageState extends BaseState<StepsPage> {
   @override
   void onSuspend() {
     if (currentStep > 0) {
+      Registry.oldState = 'MOBILE_APP_CLOSED';
       FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
     }
   }
@@ -79,6 +81,7 @@ class StepsPageState extends BaseState<StepsPage> {
   @override
   void onInactive() {
     if (currentStep > 0) {
+      Registry.oldState = 'MOBILE_APP_CLOSED';
       FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
     }
   }
@@ -86,6 +89,7 @@ class StepsPageState extends BaseState<StepsPage> {
   @override
   void onPause() {
     if (currentStep > 0) {
+      Registry.oldState = 'MOBILE_APP_CLOSED';
       FirebaseUtils.setFolderState(Registry.uid, 'MOBILE_APP_CLOSED');
     }
   }
@@ -111,6 +115,11 @@ class StepsPageState extends BaseState<StepsPage> {
               break;
             }
           case 'ANOMALIES_UPDATED':
+            {
+              Registry.dialog = false;
+              goToPage(2);
+              break;
+            }
           case 'IN_PROGRESS':
             {
               goToPage(2);
@@ -119,26 +128,31 @@ class StepsPageState extends BaseState<StepsPage> {
           case 'ANOMALIES':
             {
               _startAnomaliesRequests();
+              Registry.dialog = true;
               break;
             }
           case 'REFUSED':
             {
               Registry.folderValidated = 0;
+              Registry.dialog = true;
               _startAnomaliesRequests();
               goToPage(3);
               break;
             }
           case 'CANCELED':
             {
-              cancelSubscription();
+              // cancelSubscription();
               Registry.folderValidated = 1;
+              Registry.dialog = true;
               _startAnomaliesRequests();
               goToPage(3);
               break;
             }
           case 'VALIDATED':
             {
-              cancelSubscription();
+              // cancelSubscription();
+              Registry.comment = '';
+              Registry.dialog = false;
               Registry.folderValidated = 2;
               goToPage(3);
               break;
@@ -149,6 +163,7 @@ class StepsPageState extends BaseState<StepsPage> {
   }
 
   void cancelSubscription() {
+    dismissKeyboard(context);
     _subscription?.cancel();
   }
 
@@ -163,9 +178,7 @@ class StepsPageState extends BaseState<StepsPage> {
       Registry.uid,
       callback: (comment) {
         Registry.comment = comment;
-        if (comment.isNotEmpty) {
-          _startFolderAdvisorTextRequest();
-        }
+        _startFolderAdvisorTextRequest();
         Notifier.of(context).notify(Strings.notifyComment, Registry.comment);
         _onRequestFinished();
         return;
@@ -240,7 +253,10 @@ class StepsPageState extends BaseState<StepsPage> {
       showDialog(
         context: context,
         builder: (_) => ShopPopup(
-          onValueChanged: (filterMagasin) {
+          onValueChanged: (filterMagasin) async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setString('magasinName', filterMagasin.name);
+            prefs.setInt('magasinId', int.parse(filterMagasin.id));
             Registry.magasin = filterMagasin;
             quitDialog(context);
             updateData(filterMagasin);
@@ -261,7 +277,6 @@ class StepsPageState extends BaseState<StepsPage> {
 
   @override
   Widget onBuild() {
-    print(_currentStep);
     return WillPopScope(
       onWillPop: () async {
         showDialog(
@@ -277,7 +292,9 @@ class StepsPageState extends BaseState<StepsPage> {
                 ),
                 FlatButton(
                   onPressed: () {
+                    _currentStep = 0;
                     quitDialog(context);
+                    FirebaseUtils.deleteMessages();
                     FirebaseUtils.deleteFolder(Registry.uid,
                         callback: restartStepsPage);
                   },
@@ -353,6 +370,7 @@ class StepsPageState extends BaseState<StepsPage> {
                           duration: 60000 * 5, // 5 minutes
                           onLoadingFinished: () {
                             if (_currentStep == 1) {
+                              FirebaseUtils.deleteMessages();
                               FirebaseUtils.deleteFolder(Registry.uid,
                                   callback: () {
                                 Registry.reset();
@@ -386,7 +404,7 @@ class StepsPageState extends BaseState<StepsPage> {
                       currentStep: _currentStep,
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                     )
-                  : Container(child: Text('yo')),
+                  : Container(),
             ),
           ),
           middle: PageView(
@@ -424,12 +442,14 @@ class StepsPageState extends BaseState<StepsPage> {
     cancelSubscription();
 
     Registry.reset();
+    FirebaseUtils.deleteMessages();
 
     goToFirstPage();
   }
 
   void goToFirstPage() {
     _currentStep = 0;
+    dismissKeyboard(context);
     _animateToPage();
   }
 
@@ -440,11 +460,11 @@ class StepsPageState extends BaseState<StepsPage> {
 
   void goToPage(int page) {
     _currentStep = page % _pageViews.length;
-    dismissKeyboard(context);
     _animateToPage();
   }
 
   void _animateToPage() {
+    dismissKeyboard(context);
     _pageController.animateToPage(
       _currentStep,
       duration: Duration(milliseconds: 200),

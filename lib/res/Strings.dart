@@ -43,7 +43,7 @@ class Strings {
   static String textNbAnomalies = "%d anomalie(s)";
   static String textSelectAnomalieBeforeUpload = "Veuillez sélectionner une anomalie avant d'uploader un fichier";
   static String textAreYouSureToDeleteThisDocument = 'Voulez-vous vraiment effacer ce document ?';
-  static String textUploadDocumentsPlease = 'Merci de résoudre toutes les anomalies';
+  static String textUploadDocumentsPlease = 'Merci de cliquer sur les boutons verts afin de résoudre le ou les anomalies';
   static String textAreYouSureToLeave = 'Êtes-vous sûr de vouloir quitter ?';
   static String textNoFreeAdvisor = "Aucun conseiller n’est disponible pour prendre en charge votre demande de validation de dossier";
   static String textServiceAvailableBetween = "Les services ne sont disponibles qu'entre 9h et 20h du lundi au samedi";

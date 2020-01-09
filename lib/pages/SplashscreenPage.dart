@@ -4,6 +4,7 @@ import 'package:c_valide/FlavorConfig.dart';
 import 'package:c_valide/api/Requests.dart';
 import 'package:c_valide/app/App.dart';
 import 'package:c_valide/app/Const.dart';
+import 'package:c_valide/app/Registry.dart';
 import 'package:c_valide/autoupdate/AutoUpdate.dart';
 import 'package:c_valide/autoupdate/VersionsClient.dart';
 import 'package:c_valide/basics/BaseState.dart';
@@ -150,7 +151,11 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
   _startDataRequest() {
     Requests.getShop(
       context,
-      onSuccess: _startIsChatAvailable,
+      onSuccess: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        Registry.magasin = Registry.allShop.firstWhere((shop) => shop.name == prefs.getString('magasinName') && shop.id == prefs.getInt('magasinId').toString());
+        _startIsChatAvailable();
+      },
       onFailed: () {
         --_requestsPending;
       },

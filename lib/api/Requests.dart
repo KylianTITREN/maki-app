@@ -7,9 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Requests {
-
-  static void isChatAvailable(BuildContext context, {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}){
-    RestClient.fastTimeout.isChatAvailable().then((response){
+  static void isChatAvailable(BuildContext context,
+      {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
+    RestClient.fastTimeout.isChatAvailable().then((response) {
       bool isAvailable = response?.activated;
 
       print('Message is active ? : $isAvailable');
@@ -18,19 +18,23 @@ class Requests {
     });
   }
 
-  static void getShop(BuildContext context, {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
+  static void getShop(BuildContext context,
+      {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
     RestClient.fastTimeout.getShop(Const.API_TOKEN, 9).then((response) {
-      if(response.magasins.isNotEmpty){
+      if (response.magasins.isNotEmpty) {
         Registry.allShop = response.magasins;
         onSuccess();
-      }else{
+      } else {
         onFailed();
       }
     });
   }
 
-  static void areServicesAvailable(BuildContext context, {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
-    RestClient.fastTimeout.areServicesAvailable(Const.API_TOKEN).then((response) {
+  static void areServicesAvailable(BuildContext context,
+      {bool quitApp: true, VoidCallback onSuccess, VoidCallback onFailed}) {
+    RestClient.fastTimeout
+        .areServicesAvailable(Const.API_TOKEN)
+        .then((response) {
       bool isAvailable = response?.isAvailable ?? false;
       bool isOpenHours = response?.isOpenHours ?? false;
 
@@ -41,12 +45,15 @@ class Requests {
         if (onFailed != null) {
           onFailed();
         }
+        Registry.activeShop = false;
         _showNonAvailableDialog(context, Strings.textNoFreeAdvisor, quitApp);
       } else if (!isOpenHours) {
         if (onFailed != null) {
           onFailed();
         }
-        _showNonAvailableDialog(context, Strings.textServiceAvailableBetween, quitApp);
+        Registry.activeShop = false;
+        _showNonAvailableDialog(
+            context, Strings.textServiceAvailableBetween, quitApp);
       } else {
         if (onSuccess != null) {
           onSuccess();
@@ -57,11 +64,13 @@ class Requests {
       if (onFailed != null) {
         onFailed();
       }
+      Registry.activeShop = false;
       _showNonAvailableDialog(context, Strings.textErrorOccurred, quitApp);
     });
   }
 
-  static void _showNonAvailableDialog(BuildContext context, String message, [bool shouldQuitApp = true]) {
+  static void _showNonAvailableDialog(BuildContext context, String message,
+      [bool shouldQuitApp = true]) {
     showDialog(
       barrierDismissible: false,
       context: context,

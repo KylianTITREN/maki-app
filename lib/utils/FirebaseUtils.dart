@@ -48,7 +48,7 @@ class FirebaseUtils {
           .child(parentFolder)
           .child('chats')
           .push();
-
+  
       reference.set({
         'mobile_folder_id': folderId,
         'mobile_folder_number':folderNumber,
@@ -141,8 +141,11 @@ class FirebaseUtils {
         int index = 0;
         Map<dynamic, dynamic> values = event.snapshot.value['messages'];
         values.forEach((key, msg) {
+          print(msg);
           DateTime msgTime =
               DateTime.fromMillisecondsSinceEpoch(msg['created_at']);
+          print(msgTime);
+          print(Registry.lastMsg);
           if (msgTime.isAfter(Registry.lastMsg)) {
             if (msg['from'] == 'BO') {
               index++;
@@ -223,6 +226,23 @@ class FirebaseUtils {
           .child(parentFolder)
           .child('mobile_folders')
           .child(uid)
+          .remove()
+          .then((T) {
+        if (callback != null) {
+          callback();
+        }
+      });
+    }
+  }
+
+  static void deleteMessages({VoidCallback callback}) {
+    if (Registry.chatUid != null) {
+      FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('chats')
+          .child(Registry.chatUid)
+          .child('messages')
           .remove()
           .then((T) {
         if (callback != null) {
