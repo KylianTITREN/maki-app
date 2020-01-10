@@ -191,6 +191,17 @@ class _StepPage1State extends BaseState<StepPage1> {
     }
   }
 
+  void _startGetMobileDelay() {
+    Requests.getMobileDelay(context, onSuccess: () {
+        DialogUtils.dismiss(context);
+        widget.parentState.goToPage(1);
+    }, onFailed: () {
+      Registry.mobileDelay = 60000*5;
+      DialogUtils.dismiss(context);
+      widget.parentState.goToPage(1);
+    });
+  }
+
   void _startAreServicesAvailableRequest() {
     Requests.areServicesAvailable(
       context,
@@ -209,11 +220,10 @@ class _StepPage1State extends BaseState<StepPage1> {
       Registry.folderNumber,
       int.parse(Registry.magasin.id),
       callback: (String uid) {
-        DialogUtils.dismiss(context);
         Registry.uid = uid;
         Registry.actualVideoDuration = Duration.zero;
-        widget.parentState.goToPage(1);
         _setChatFolderId();
+        _startGetMobileDelay();
       },
       errorCallback: () {
         DialogUtils.dismiss(context);

@@ -40,7 +40,8 @@ class FirebaseUtils {
     }
   }
 
-  static void createChat(String folderId, String folderNumber, int shopId, String shopName,
+  static void createChat(
+      String folderId, String folderNumber, int shopId, String shopName,
       {CreateCallback callback, VoidCallback errorCallback}) {
     if (folderId != null && Registry.activeMessage == true) {
       DatabaseReference reference = FirebaseDatabase.instance
@@ -48,12 +49,12 @@ class FirebaseUtils {
           .child(parentFolder)
           .child('chats')
           .push();
-  
+
       reference.set({
         'mobile_folder_id': folderId,
-        'mobile_folder_number':folderNumber,
+        'mobile_folder_number': folderNumber,
         'shop_id': shopId,
-        'shop_name':shopName,
+        'shop_name': shopName,
         'created_at': DateTime.now().millisecondsSinceEpoch,
       }).then((success) {
         if (callback != null) {
@@ -68,14 +69,22 @@ class FirebaseUtils {
 
   static void setChatFolderId(String uid, String folderNumber, String folderId,
       {CreateCallback callback}) {
-    if (uid != null && uid.isNotEmpty && folderNumber != null && folderNumber.isNotEmpty && folderId.isNotEmpty && folderId != null) {
+    if (uid != null &&
+        uid.isNotEmpty &&
+        folderNumber != null &&
+        folderNumber.isNotEmpty &&
+        folderId.isNotEmpty &&
+        folderId != null) {
       DatabaseReference reference = FirebaseDatabase.instance
           .reference()
           .child(parentFolder)
           .child('chats')
           .child(uid);
 
-      reference.update({'mobile_folder_id': folderId, 'mobile_folder_number': folderNumber}).then((success) {
+      reference.update({
+        'mobile_folder_id': folderId,
+        'mobile_folder_number': folderNumber
+      }).then((success) {
         if (callback != null) {
           callback(reference.key);
         }
@@ -85,7 +94,8 @@ class FirebaseUtils {
     }
   }
 
-  static void updateShopId(String uid, int shopId, String shopName, {CreateCallback callback}) {
+  static void updateShopId(String uid, int shopId, String shopName,
+      {CreateCallback callback}) {
     if (uid != null && uid.isNotEmpty && shopId != null && shopName != null) {
       DatabaseReference reference = FirebaseDatabase.instance
           .reference()
@@ -93,7 +103,26 @@ class FirebaseUtils {
           .child('chats')
           .child(uid);
 
-      reference.update({'shop_id': shopId, 'shop_name': shopName}).then((success) {
+      reference
+          .update({'shop_id': shopId, 'shop_name': shopName}).then((success) {
+        if (callback != null) {
+          callback(reference.key);
+        }
+      }).catchError((error) {
+        toast(Strings.textErrorOccurred);
+      });
+    }
+  }
+
+  static void sendNotificationToBo(String uid, {CreateCallback callback}) {
+    if (uid != null && uid.isNotEmpty) {
+      DatabaseReference reference = FirebaseDatabase.instance
+          .reference()
+          .child(parentFolder)
+          .child('chats')
+          .child(Registry.chatUid);
+
+      reference.update({'bo_notification': true}).then((success) {
         if (callback != null) {
           callback(reference.key);
         }
@@ -137,7 +166,8 @@ class FirebaseUtils {
         .child(uid)
         .onChildChanged
         .listen((Event event) {
-      if (event.snapshot.value['messages'] != null && event.snapshot.value['messages'].isNotEmpty) {
+      if (event.snapshot.value['messages'] != null &&
+          event.snapshot.value['messages'].isNotEmpty) {
         int index = 0;
         Map<dynamic, dynamic> values = event.snapshot.value['messages'];
         values.forEach((key, msg) {
@@ -147,6 +177,9 @@ class FirebaseUtils {
           print(msgTime);
           print(Registry.lastMsg);
           if (msgTime.isAfter(Registry.lastMsg)) {
+            if (msg['from'] == 'APP') {
+              sendNotificationToBo(key);
+            }
             if (msg['from'] == 'BO') {
               index++;
             } else {

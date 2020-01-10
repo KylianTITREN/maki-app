@@ -8,7 +8,8 @@ class Registry {
   static bool activeShop = true;
   static bool dialog;
   static DateTime lastMsg;
-  static bool activeMessage;
+  static bool activeMessage = false;
+  static int mobileDelay = 60000*5;
   static int messageBadge = 0;
   static String comment = '';
   static String advisorText = '';

@@ -47,7 +47,6 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
             } else {
               _startDataRequest();
             }
-//          _startSharedPreferencesInitialization();
           },
         );
       },
@@ -139,6 +138,9 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
       onSuccess: () {
         _startDataRequest();
       },
+      onFailed: () {
+        _requestsPending--;
+      }
     );
   }
 
@@ -161,13 +163,6 @@ class SplashscreenPageState extends BaseState<SplashscreenPage> {
       },
     );
   }
-
-//  void _startSharedPreferencesInitialization() {
-//    _requestsPending++;
-//    initializeSharedPreferences(() {
-//      _onRequestsFinished();
-//    });
-//  }
 
   void _onRequestsFinished() {
     if (--_requestsPending == 0) {

@@ -11,6 +11,7 @@ import 'package:c_valide/res/HeroTags.dart';
 import 'package:c_valide/res/Strings.dart';
 import 'package:c_valide/res/Styles.dart';
 import 'package:c_valide/utils/FirebaseUtils.dart';
+import 'package:c_valide/utils/Page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notifier/notifier.dart';

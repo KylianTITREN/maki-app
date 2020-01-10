@@ -5,6 +5,7 @@ import 'package:c_valide/models/ActiveMessage.dart';
 import 'package:c_valide/models/AllShop.dart';
 import 'package:c_valide/models/Anomalies.dart';
 import 'package:c_valide/models/Availability.dart';
+import 'package:c_valide/models/MobileDelay.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -73,4 +74,8 @@ abstract class RestClient {
 
   @GET("chat/is-active")
   Future<ActiveMessage> isChatAvailable();
+
+
+  @GET("mobile-folders-delay")
+  Future<MobileDelay> getMobileDelay();
 }

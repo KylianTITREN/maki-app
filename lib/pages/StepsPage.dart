@@ -56,6 +56,8 @@ class StepsPageState extends BaseState<StepsPage> {
 
     if (Registry.magasin == null && Registry.activeShop == true) {
       Timer(Duration(seconds: 3), () => showPopup == 0 ? _chooseShop() : null);
+    }else{
+      Registry.chatUid.isEmpty ? _createChat() : _updateChatShopId();
     }
 
     _pageController = PageController(
@@ -277,6 +279,7 @@ class StepsPageState extends BaseState<StepsPage> {
 
   @override
   Widget onBuild() {
+    print(Registry.mobileDelay);
     return WillPopScope(
       onWillPop: () async {
         showDialog(
@@ -367,7 +370,7 @@ class StepsPageState extends BaseState<StepsPage> {
                             height: 20,
                             width: 20,
                           ),
-                          duration: 60000 * 5, // 5 minutes
+                          duration: Registry.mobileDelay, // 5 minutes
                           onLoadingFinished: () {
                             if (_currentStep == 1) {
                               FirebaseUtils.deleteMessages();
