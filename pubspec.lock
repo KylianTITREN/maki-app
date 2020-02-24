@@ -183,6 +183,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.7"
+  dynamic_theme:
+    dependency: "direct main"
+    description:
+      name: dynamic_theme
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   file_picker:
     dependency: "direct main"
     description:
@@ -191,12 +198,19 @@ packages:
     source: hosted
     version: "1.4.3+2"
   firebase:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.1.0"
+  firebase_analytics:
+    dependency: "direct main"
+    description:
+      name: firebase_analytics
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.9"
   firebase_core:
     dependency: "direct main"
     description:
@@ -225,6 +239,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.1"
+  firebase_storage:
+    dependency: "direct main"
+    description:
+      name: firebase_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.1"
   fixnum:
     dependency: transitive
     description:
@@ -232,6 +253,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.10.11"
+  flare_dart:
+    dependency: transitive
+    description:
+      name: flare_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.3"
+  flare_flutter:
+    dependency: transitive
+    description:
+      name: flare_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
+  flare_loading:
+    dependency: transitive
+    description:
+      name: flare_loading
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.1"
+  flare_splash_screen:
+    dependency: "direct main"
+    description:
+      name: flare_splash_screen
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -251,13 +300,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.4"
-  flutter_plugin_android_lifecycle:
-    dependency: transitive
-    description:
-      name: flutter_plugin_android_lifecycle
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -330,7 +372,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3"
+    version: "0.6.0+10"
   intl:
     dependency: "direct main"
     description:
@@ -478,6 +520,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
+  photo_view:
+    dependency: "direct main"
+    description:
+      name: photo_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.1"
   platform:
     dependency: transitive
     description:

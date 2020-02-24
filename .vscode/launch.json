@@ -4,17 +4,18 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "Production",
+            "name": "Maki App",
             "request": "launch",
             "type": "dart",
-            "program": "lib/flavors/fnac_production.dart",
+            "program": "lib/flavors/dev.dart"
         },
         {
-            "name": "Staging",
+            "name": "Maki App - Prod",
             "request": "launch",
             "type": "dart",
-            "program": "lib/flavors/fnac_staging.dart",
+            "program": "lib/flavors/prod.dart"
         }
     ]
 }
