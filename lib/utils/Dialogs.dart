@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:c_valide/res/colours.dart';
-import 'package:c_valide/utils/Page.dart';
+import 'package:maki_app/res/colours.dart';
+import 'package:maki_app/utils/Page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -146,7 +146,7 @@ class ChoicesDialog extends BasicDialog {
             .map(
               (e) => CupertinoDialogAction(
                 child: Text(e),
-                textStyle: TextStyle(color: Colours.primaryColor),
+                textStyle: TextStyle(color: e == 'Supprimer' ? Colors.red : Colours.primaryColor),
                 onPressed: actions[e],
               ),
             )
