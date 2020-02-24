@@ -1,116 +1,152 @@
+import 'package:c_valide/app/Misc.dart';
+import 'package:c_valide/res/Colours.dart';
 import 'package:flutter/material.dart';
 
-const PrimaryColor = const Color(0xFF494949);
-const PrimaryColorLight = const Color(0xFF494949);
-const PrimaryColorDark = const Color(0xFFFFFFFF);
-
-const SecondaryColor = const Color(0xFFFFA942);
-const SecondaryColorLight = const Color(0xFFFFA942);
-const SecondaryColorDark = const Color(0xFFFFA942);
-
-const CardColor = const Color(0xFFFFFFFF);
-const DarkCardColor = const Color(0xFF222727);
-
-const Background = const Color(0xFFFFFFFF);
-const TextColor = const Color(0xFF494949);
-
-const DarkTextColor = const Color(0xFFFFFFFF);
-
-const DarkBackground = const Color(0xFF000000);
-
 class Styles {
-  static final ThemeData defaultTheme = _buildTheme();
-
-  static ThemeData _buildTheme() {
-    final ThemeData base = ThemeData.light();
-
-    return base.copyWith(
-      appBarTheme: base.appBarTheme.copyWith(
-        color: Background,
-        elevation: 0,
-      ),
-      accentColor: SecondaryColor,
-      accentColorBrightness: Brightness.dark,
-      primaryColor: PrimaryColor,
-      primaryColorDark: PrimaryColorDark,
-      primaryColorLight: PrimaryColorLight,
-      primaryColorBrightness: Brightness.dark,
-      buttonTheme: base.buttonTheme.copyWith(
-        buttonColor: SecondaryColor,
-        textTheme: ButtonTextTheme.primary,
-      ),
-      scaffoldBackgroundColor: Background,
-      cardColor: CardColor,
-      textSelectionColor: PrimaryColorLight,
-      backgroundColor: Background,
-      textTheme: base.textTheme
-          .copyWith(
-              title: base.textTheme.title.copyWith(color: TextColor),
-              body1: base.textTheme.body1.copyWith(color: TextColor),
-              body2: base.textTheme.body2.copyWith(color: TextColor))
-          .apply(fontFamily: 'Lato', bodyColor: TextColor),
+  static TextStyle splashcreenTitle(BuildContext context) {
+    return TextStyle(
+      color: Colours.primaryColor,
+      fontSize: 42.0,
+      fontWeight: FontWeight.w900,
+      fontFamily: 'GothamRounded',
     );
   }
 
-  static final ThemeData darkTheme = _buildDarkTheme();
-
-  static ThemeData _buildDarkTheme() {
-    final ThemeData base = ThemeData.dark();
-
-    return base.copyWith(
-      appBarTheme: base.appBarTheme.copyWith(
-        color: DarkBackground,
-        elevation: 0,
-      ),
-      accentColor: SecondaryColorDark,
-      accentColorBrightness: Brightness.dark,
-      primaryColor: PrimaryColorDark,
-      primaryColorDark: PrimaryColorDark,
-      primaryColorLight: PrimaryColorLight,
-      primaryColorBrightness: Brightness.dark,
-      buttonTheme: base.buttonTheme.copyWith(
-        buttonColor: SecondaryColor,
-        textTheme: ButtonTextTheme.primary,
-      ),
-      scaffoldBackgroundColor: DarkBackground,
-      cardColor: DarkCardColor,
-      textSelectionColor: PrimaryColorLight,
-      backgroundColor: DarkBackground,
-      textTheme: base.textTheme.copyWith(
-          title: base.textTheme.title.copyWith(color: DarkTextColor),
-          body1: base.textTheme.body1.copyWith(color: DarkTextColor),
-          body2: base.textTheme.body2.copyWith(color: DarkTextColor)),
+  static TextStyle appBarTitle(BuildContext context) {
+    return TextStyle(
+      color: Colours.primaryColor,
+      fontSize: 22.0,
+      fontFamily: 'GothamRounded',
     );
   }
 
-  static InputDecoration formField(BuildContext context, {String placeholder, bool dropdown}) {
+  static TextStyle popupTitle(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: 20.0,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  static TextStyle title(BuildContext context) {
+    return TextStyle(
+      color: Colours.primaryColor,
+      fontSize: 24.0,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  static TextStyle subtitle(BuildContext context) {
+    return TextStyle(
+      color: Colours.primaryColor,
+      fontSize: 20.0,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  static TextStyle subsubtitle(BuildContext context) {
+    return TextStyle(
+      color: Colours.primaryColor,
+      fontSize: 14.0,
+      fontWeight: FontWeight.w400,
+    );
+  }
+
+  static TextStyle text(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: Misc.isTablet(context) ? 20.0 : 16.0,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  static TextStyle subtext(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: Misc.isTablet(context) ? 16.0 : 12.0,
+      fontWeight: FontWeight.w300,
+    );
+  }
+
+  static TextStyle textThin(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: Misc.isTablet(context) ? 19.0 : 15.0,
+      fontWeight: FontWeight.w300,
+    );
+  }
+
+  static TextStyle description(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: Misc.isTablet(context) ? 21.0 : 16.0,
+      fontWeight: FontWeight.w400,
+    );
+  }
+
+  static TextStyle littleTextPrimary(BuildContext context) {
+    return TextStyle(
+      color: Colours.primaryColor,
+      fontSize: Misc.isTablet(context) ? 18.0 : 14.0,
+      fontWeight: FontWeight.w500,
+    );
+  }
+
+  static InputDecoration editText(BuildContext context, {String hint}) {
     return InputDecoration(
       counterText: '',
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14.0)),
-        borderSide: BorderSide(color: Colors.transparent),
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderSide: BorderSide(
+          color: Colors.black54,
+        ),
       ),
-      suffixIcon: dropdown != null && dropdown == true ? Icon(Icons.arrow_drop_down) : null,
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14.0)),
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
         borderSide: BorderSide(
-          color: Colors.transparent,
+          color: Colors.black54,
         ),
       ),
-      disabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14.0)),
-        borderSide: BorderSide(
-          color: Colors.transparent,
-        ),
-      ),
-      contentPadding: EdgeInsets.only(left: 20.0, right: 8.0, top: 32.0),
+      contentPadding: EdgeInsets.only(left: 8.0, right: 8.0, top: 32.0),
       filled: true,
-      fillColor: Theme.of(context).backgroundColor,
-      hintText: placeholder,
-      hintStyle: TextStyle(fontSize: 14, color: dropdown != null && dropdown == true ? Theme.of(context).primaryColor : Colors.black26),
+      fillColor: Colours.field,
+      hintText: hint,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14.0)),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(5.0),
+          bottomRight: Radius.circular(5.0),
+        ),
       ),
     );
   }
+
+  static InputDecoration textField(BuildContext context, {String hint, Color hintColor}) {
+    return InputDecoration(
+      labelText: hint ?? '',
+      hintStyle: TextStyle(fontSize: 14.0, color: hintColor ?? Colors.black),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24.0)),
+    );
+  }
+
+  static InputDecoration textFieldDisabled(BuildContext context, String hint) {
+    return InputDecoration(
+      filled: true,
+      fillColor: Colours.lightGrey,
+      labelText: hint,
+      labelStyle: TextStyle(
+        color: Color.fromARGB(255, 75, 75, 75),
+        fontSize: 18.0,
+        fontWeight: FontWeight.w900,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24.0),
+        borderSide: BorderSide(
+          width: 0.0,
+          style: BorderStyle.none,
+        ),
+      ),
+    );
+  }
+
+  static button(BuildContext context) {}
 }

@@ -6,8 +6,8 @@ class System {
   /// Status bar dark icons and transparent background
   static void transparentStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle.dark.copyWith(
-        statusBarIconBrightness: Brightness.dark,
+      SystemUiOverlayStyle.light.copyWith(
+        statusBarIconBrightness: Brightness.light,
         statusBarColor: Colors.transparent,
       ),
     );

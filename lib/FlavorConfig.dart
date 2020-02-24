@@ -1,7 +1,7 @@
-import 'package:maki_app/utils/StringUtils.dart';
+import 'package:c_valide/utils/StringUtils.dart';
 import 'package:flutter/material.dart';
 
-enum Flavor { PROD, DEV }
+enum Flavor { FNAC }
 enum BuildType { LOCAL, STAGING, PRODUCTION }
 
 class FlavorValues {
@@ -9,11 +9,17 @@ class FlavorValues {
     this.appName,
     this.flavorName,
     this.apiBaseUrl,
+    this.enseigneId,
+    this.autoUpdateIdiOS,
+    this.autoUpdateIdAndroid,
   });
 
   final String appName;
   final String flavorName;
   final String apiBaseUrl;
+  final int enseigneId;
+  final String autoUpdateIdiOS;
+  final String autoUpdateIdAndroid;
 }
 
 class FlavorConfig {
